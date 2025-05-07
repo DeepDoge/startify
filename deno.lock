@@ -1,0 +1,264 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/fs@1.0.17": "1.0.17",
+    "jsr:@std/path@1.0.9": "1.0.9",
+    "jsr:@std/path@^1.0.9": "1.0.9",
+    "npm:@girs/adw-1@*": "1.8.0-4.0.0-beta.23",
+    "npm:@girs/cairo-1.0@*": "1.0.0-4.0.0-beta.23",
+    "npm:@girs/gdk-4.0@*": "4.0.0-4.0.0-beta.23",
+    "npm:@girs/gio-2.0@*": "2.84.0-4.0.0-beta.23",
+    "npm:@girs/glib-2.0@*": "2.84.0-4.0.0-beta.23",
+    "npm:@girs/gobject-2.0@*": "2.84.0-4.0.0-beta.23",
+    "npm:@girs/gtk-4.0@*": "4.18.3-4.0.0-beta.23",
+    "npm:@girs/pango-1.0@*": "1.56.4-4.0.0-beta.23"
+  },
+  "jsr": {
+    "@std/fs@1.0.17": {
+      "integrity": "1c00c632677c1158988ef7a004cb16137f870aafdb8163b9dce86ec652f3952b",
+      "dependencies": [
+        "jsr:@std/path@^1.0.9"
+      ]
+    },
+    "@std/path@1.0.9": {
+      "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
+    }
+  },
+  "npm": {
+    "@girs/adw-1@1.8.0-4.0.0-beta.23": {
+      "integrity": "sha512-yDhOFc7qHTvIXo5naYuljtmpipP+z0JCyw6qw+mGEwyh0PXF9VA7MOUu5lUVQAsJgwUD5hLsWmqhd/JxnaXf7Q==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gdk-4.0",
+        "@girs/gdkpixbuf-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/graphene-1.0",
+        "@girs/gsk-4.0",
+        "@girs/gtk-4.0",
+        "@girs/harfbuzz-0.0",
+        "@girs/pango-1.0",
+        "@girs/pangocairo-1.0"
+      ]
+    },
+    "@girs/cairo-1.0@1.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-t5fADO+9TmZy8Xzk6Fqk23B3bmakzhNQxa3kFERzy2cL8p1q1pAWm1ARNcadIsl2IbflS4Hbn5sAwRwOm8W67A==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/freetype2-2.0@2.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-DpMJET2s2ZXmGjScv+tu8tyEDIT6mIEWgY/Lp5HaXTUkKpw+LdtVV0bEwiXMYn3TSs6QYJZyBxNlwTSD3qb+Ww==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gdk-4.0@4.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-esdIxWgxyKQKYAsQBnTZPHocf5CXwEovt6Xp2aIVxbATLzzd0x35194PPjq51IbZ7eRi/XnBC9yTlNI5JYVNog==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gdkpixbuf-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/harfbuzz-0.0",
+        "@girs/pango-1.0",
+        "@girs/pangocairo-1.0"
+      ]
+    },
+    "@girs/gdkpixbuf-2.0@2.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-Apku+aCEsosPXdEOnDtI3GPdX2Seo2rWUm10aY3ijGOnvafjmsJkHwWlThHzV850Ygi7dw3hBBys0z8hG6Cf1A==",
+      "dependencies": [
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gio-2.0@2.84.0-4.0.0-beta.23": {
+      "integrity": "sha512-FcGgYQ96KhdeFJvUYsIm0XmOYaYnTfpHKzPUOW4IcJm5q38RNDKgoijBMfedv3fMxnPDtpMb08ZFD6P1GjJY8A==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gjs@4.0.0-beta.23": {
+      "integrity": "sha512-Yz1s23WaGAsVHetWFReVxeYDJbVFtJ6KZ7u+qzWa/B3P2mB+5aXpGc7nV6Bx7GbRc48FuGgtbKxVo0rq26Ug/Q==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/gio-2.0",
+        "@girs/glib-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/glib-2.0@2.84.0-4.0.0-beta.23": {
+      "integrity": "sha512-epQae3f9rDeIrEgA9hOEiNAppJYQAfVRZ4Uh/0yO9NtAQR6PTfXUpjotw9ndjVxsHpEmRODoM2t/kytCYqKmVg==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gmodule-2.0@2.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-Dc+Pq1peNlwQ0o/WFsUzT1qt3oqgMLBhzjEfOTGAD0Jw1Ut3QCoBuryVFFNMIruOKnSSBoBnQO7Qelly5aSd2w==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gobject-2.0@2.84.0-4.0.0-beta.23": {
+      "integrity": "sha512-GNWQDLo+Nmq2FQNPljKKh4Zplp8vZwwr0hj1sf4lbJ36zbVsovrhfNozqaph0XNjv8vtHeTcXUocGQprM9FHCg==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/glib-2.0"
+      ]
+    },
+    "@girs/graphene-1.0@1.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-C6HAR88uCAi6xCKip208tPdzYUBFICiCyBSBm+gVzniEfikNM4CVN7+tHHwp4Gd1FKixK5EMVDIYs5sCfToNWQ==",
+      "dependencies": [
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/gsk-4.0@4.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-zLjklfxLjef6SV5VEQ2+52G/d+hQqmp6HbBu0/Jn5CLFFYe22LmDQWSEtGOn0NwKDL7XltXaxKoT/JBHEQsgcg==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gdk-4.0",
+        "@girs/gdkpixbuf-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/graphene-1.0",
+        "@girs/harfbuzz-0.0",
+        "@girs/pango-1.0",
+        "@girs/pangocairo-1.0"
+      ]
+    },
+    "@girs/gtk-4.0@4.18.3-4.0.0-beta.23": {
+      "integrity": "sha512-CsMPZLHQz+kWP81zR8AfPRpqUh9g1i5QNG08E9shj3Z9hvbR3goXmQXCSjgVxkcD40YsFn2tlc5FF/aztwY45Q==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gdk-4.0",
+        "@girs/gdkpixbuf-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/graphene-1.0",
+        "@girs/gsk-4.0",
+        "@girs/harfbuzz-0.0",
+        "@girs/pango-1.0",
+        "@girs/pangocairo-1.0"
+      ]
+    },
+    "@girs/harfbuzz-0.0@9.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-9uWYDEUhkyoClR4GHv69AMHRDtcNSwidtA8MG8c1rMDT5qWNWkwfQK5hwX8/oBCbL0LqJNeMfJByIQ3yLfgQGg==",
+      "dependencies": [
+        "@girs/freetype2-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gobject-2.0"
+      ]
+    },
+    "@girs/pango-1.0@1.56.4-4.0.0-beta.23": {
+      "integrity": "sha512-gezMBRQerPUt7xLGzx34W0UFK+AVf2S7GPKm1LK8dGGq4qnjkkEdf1w2wcN/iV3lLCxz1+4U0MmBArrqcSe2hQ==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/harfbuzz-0.0"
+      ]
+    },
+    "@girs/pangocairo-1.0@1.0.0-4.0.0-beta.23": {
+      "integrity": "sha512-8omT0HAxzj+IDLIYLv08GjXc43yRs5QXxttEtV+/0aDWX0XOyaenuWg9cNS8lwBKPIa5tW9lcdLCudyBJ2xcqA==",
+      "dependencies": [
+        "@girs/cairo-1.0",
+        "@girs/freetype2-2.0",
+        "@girs/gio-2.0",
+        "@girs/gjs",
+        "@girs/glib-2.0",
+        "@girs/gmodule-2.0",
+        "@girs/gobject-2.0",
+        "@girs/harfbuzz-0.0",
+        "@girs/pango-1.0"
+      ]
+    }
+  },
+  "redirects": {
+    "https://github.com/ahgilak/deno_gi/raw/main/mod.ts": "https://raw.githubusercontent.com/ahgilak/deno_gi/main/mod.ts"
+  },
+  "remote": {
+    "https://esm.sh/reflect-metadata@0.2.2": "7b7b11f30b9ac06541abbd564538632bfbe2c4d935643d6d360f7a2fcaeda310",
+    "https://esm.sh/reflect-metadata@0.2.2/denonext/reflect-metadata.mjs": "23fc11733664e8349c31617add4a39df818bc72aff94d98a4d05d82a0d0d6739",
+    "https://gir.deno.dev/Adw-1": "d6eeef5fe59b1a137bcc7f2697f1333d07c9e38325575833b1f84398f05451ff",
+    "https://gir.deno.dev/GLib-2.0": "d0428a3be12fe4ae440ca12bfd0aac647e0dac1922031ec96163e97dfefeba28",
+    "https://gir.deno.dev/GObject-2.0": "71d975f8d71135600e4708a048c7058d2e14a89d877161002563ac8f81d30fbd",
+    "https://gir.deno.dev/Gdk-4.0": "1a3a4f4f15b991da99062c006d36b28da85018c0d48987145bca440a7799835d",
+    "https://gir.deno.dev/Gio-2.0": "d8bad070e1a74d8416cb7707a7ef7cab78de62397fecc1aee704e03a7e74720c",
+    "https://gir.deno.dev/Gtk-4.0": "d8fe7791d8238b592dbff7dce564a2482c16f87c4dd891875fb40b041817d997",
+    "https://gir.deno.dev/Pango-1.0": "c6bd31b478a24529b386a571b0ce89b6b9999ccfbfb689ac2741c5943f06e1cf",
+    "https://gir.deno.dev/cairo-1.0": "b2e68301a77a7ecd2b99dcdd8ec37e9f3e5aae89c317a5896454f5bcc56b6765",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/mod.ts": "ac7f971acfd7a7575a628d351ee54ffaaf1de3e2ee559d492c8b421dfb4d89a6",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/base_utils/convert.ts": "ca64d01f5332f4e91f677a8bda67ab5ba4b81078e55a047aeaa2bf45eaa4d1c8",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/base_utils/ffipp.js": "1b20c532e097f23a1110a44a39e892676d4beabf926d186acc02cb47ab3c3b67",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/base_utils/types.ts": "ab60a6f05d26bfc23b31bb55680f57ff6f29e9d22b5e6313dcaa9ca104e9d1c6",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/enums.js": "221e4565313194c380d156754f805c03f80d7511eea4f510a8503199a57b7d6f",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/girepository.js": "9526430894ab4ffeec0c8aa088a525bc29c35d70de06bad3faac285a5bebe430",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/glib.js": "0877ea1b91be167979f635e5c83870578b28807106df5aa607a7d751df35ec66",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/gobject.js": "5800750c300613d47260fb60abf95a8d46f92a09e87f69ba7f8478aab0e7a311",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/mod.js": "411661d77be9cb816e462bcece376c109117d2a535a5fbbc4ac3d419f1bcdcbd",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/bindings/ranges.ts": "eac384288056695e613aa1f121a55db1e1ef09eb81a9a113a209d0324e390e1f",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/gi.js": "af01ca2a322d694d915908a41ae1e2cd90c56664aec52e6839a7170cf2be64d8",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/handleInfo.js": "7e9ee199943a53d57a3488f386b01ae29c2a4745e28628a9d951a5ea3cd16e6b",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/overrides/GLib.ts": "8453709728f4a814e91f6337ebba4c2d027c360f48c81502082b817f65bb3be6",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/overrides/GObject.ts": "16b3603f5eadbaa209a1b1f178fff81f7be2539610bd9f440bc7ac37f4822336",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/overrides/mod.ts": "27430d5a510c090a95519a133dcd1ae7d3eafa72b365a7dbeb873e7fdf4c2434",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/argument.js": "f495bd0d5b1ef27c9b7c2f95384d9f565dedfa9d38b2b2b2f77d67a12292a4a3",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/argument/array.js": "c3d6bcc58c7d96af61fb4f1fae2ec32f503f3beec0ec59bc07da70c73e1bf570",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/argument/interface.js": "44bb8f7cad2abec784cb6b91322a950c5e1ff59f149cd549230bbb7f78f56df0",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/argument/list.js": "77b4a7251d6631b9ab5aa4954ac5a072dcf85637715fd4bae8ae866ec00720ba",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callable.js": "7817cdf1e9459898a5269f39676865b29d5f4fca74cd378ff8596c08560052b3",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callable/constructor.js": "701ba344fb5fb0523d84ec25fa8f23e52d4d0b8d3196f81b0f55b46e855ff72a",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callable/function.js": "c6f7bc97d7c2270a1ed2d86405652dcf31380f114411f253b5a646184b2990a3",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callable/method.js": "89cb29c67bc8084619d89ca58ad1ac07cb99cf7b98aa0c812ee74d2f2e9a5df1",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callable/vfunc.js": "ede09eb780e4b6329820e7e816b0b300c7c40dc88f2bbdd72d939732d3a25f20",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/callback.js": "a6394cbc22d88bc6278065da1f0cf35cae33ea1bede667ae25c917e16aacff20",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/constant.js": "c6941a230c42d509ac8db76b2b63dfff3841c7216677feff2481722dda8ac326",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/enum.js": "9b57df89e9e549687e131a7109d47246fb15aa21b251715048741009e61dc953",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/field.js": "c2ac306f4e758c7b96f3582099900b9ef729cf8a9af3e02b4dd6915061e90654",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/interface.js": "59dc20e3c3c80dbf28ecdf758200c279663665cc8868f984d6b628bdff855946",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/object.js": "9392f5679c09bf7e03cf1bbbd8cb78ae08ee6355d209a25dba5a77f6f2a4a60d",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/prop.js": "5a32e899a6009b57c7e2889ec3a3da215ea9c08e49fc9a97d4ab1eb0001ea8f1",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/signal.js": "58ec4ca88ae22f46002f4bb9bb894c29172d626f6f418c22d85a1b7c66242e0a",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/struct.js": "68ab53d0f960dd177fe96c728dbb3b50b5edb0b8adb693684b78cca8f85bdfc2",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/types/value.js": "3ec9e5e78114f4f06898f4e09edd9cf091f886e2dbdbe46bea81c2c81517c952",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/dataview.js": "ac1f59e1013c97e225df6a6866bae2d0f3436534e80c75174bf4267639b94767",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/error.ts": "aa9e770842896cbae1fd9e0b882189d4a71b0e26bfd41513d3c43525d06fbc3b",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/gobject.js": "0930a408995669d795320caa3554ebe025f3b2281e59d5a7e281fad8d3161cfb",
+    "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/string.ts": "2d165e0e0fc7bcf92d02299d37f11255e2cbba5e26fc9842bbdacbd3fc2d4cf0"
+  }
+}

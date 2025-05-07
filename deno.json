@@ -1,0 +1,28 @@
+{
+	"imports": {
+		"gi/Adw": "https://gir.deno.dev/Adw-1",
+		"gi/Gio": "https://gir.deno.dev/Gio-2.0",
+		"gi/Gtk": "https://gir.deno.dev/Gtk-4.0",
+		"gi/Gdk": "https://gir.deno.dev/Gdk-4.0",
+		"gi/Pango": "https://gir.deno.dev/Pango-1.0",
+		"gi/Cairo": "https://gir.deno.dev/cairo-1.0",
+		"gi/GLib": "https://gir.deno.dev/GLib-2.0",
+		"gi/GObject": "https://gir.deno.dev/GObject-2.0"
+	},
+	"compilerOptions": {
+		"lib": [
+			"esnext",
+			"deno.ns",
+			"deno.window"
+		],
+		"noUncheckedIndexedAccess": true
+	},
+	"tasks": {
+		"start": "deno run -A ./src/app.ts"
+	},
+	"fmt": {
+		"useTabs": true,
+		"indentWidth": 4,
+		"lineWidth": 120
+	}
+}
