@@ -18,7 +18,8 @@
 		"noUncheckedIndexedAccess": true
 	},
 	"tasks": {
-		"start": "deno run -A ./src/app.ts"
+		"start": "deno run -A ./src/app.ts",
+		"compile": "deno compile -A -o ./dist/ ./src/app.ts"
 	},
 	"fmt": {
 		"useTabs": true,
