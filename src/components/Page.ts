@@ -1,5 +1,5 @@
-import Adw from "gi/Adw";
-import Gtk from "gi/Gtk";
+import Adw from "@girs/Adw";
+import Gtk from "@girs/Gtk";
 import { SPACING } from "../common/constants.ts";
 
 export type Page = {
@@ -14,7 +14,7 @@ export function Page(): Page {
 	scroller.set_child(viewport);
 	const clamp = Adw.Clamp.new();
 	viewport.set_child(clamp);
-	const content = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
+	const content = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
 	clamp.set_child(content);
 	content.set_margin_start(SPACING);
 	content.set_margin_end(SPACING);

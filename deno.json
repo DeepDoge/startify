@@ -1,13 +1,13 @@
 {
 	"imports": {
-		"gi/Adw": "https://gir.deno.dev/Adw-1",
-		"gi/Gio": "https://gir.deno.dev/Gio-2.0",
-		"gi/Gtk": "https://gir.deno.dev/Gtk-4.0",
-		"gi/Gdk": "https://gir.deno.dev/Gdk-4.0",
-		"gi/Pango": "https://gir.deno.dev/Pango-1.0",
-		"gi/Cairo": "https://gir.deno.dev/cairo-1.0",
-		"gi/GLib": "https://gir.deno.dev/GLib-2.0",
-		"gi/GObject": "https://gir.deno.dev/GObject-2.0"
+		"@girs/Adw": "https://gir.deno.dev/Adw-1",
+		"@girs/Gio": "https://gir.deno.dev/Gio-2.0",
+		"@girs/Gtk": "https://gir.deno.dev/Gtk-4.0",
+		"@girs/Gdk": "https://gir.deno.dev/Gdk-4.0",
+		"@girs/Pango": "https://gir.deno.dev/Pango-1.0",
+		"@girs/Cairo": "https://gir.deno.dev/Cairo-1.0",
+		"@girs/GLib": "https://gir.deno.dev/GLib-2.0",
+		"@girs/GObject": "https://gir.deno.dev/GObject-2.0"
 	},
 	"compilerOptions": {
 		"lib": [
@@ -18,8 +18,8 @@
 		"noUncheckedIndexedAccess": true
 	},
 	"tasks": {
-		"start": "deno run -A ./src/app.ts",
-		"compile": "deno compile -A -o ./dist/ ./src/app.ts"
+		"start": "deno run --allow-all ./src/app.ts",
+		"compile": "deno compile --allow-all -o ./dist/ ./src/app.ts"
 	},
 	"fmt": {
 		"useTabs": true,

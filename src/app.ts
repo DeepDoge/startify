@@ -1,8 +1,8 @@
 #!/usr/bin/env -S deno run -A
 
-import Adw from "gi/Adw";
-import Gio from "gi/Gio";
-import Gtk from "gi/Gtk";
+import Adw from "@girs/Adw";
+import Gio from "@girs/Gio";
+import Gtk from "@girs/Gtk";
 import { AllPage } from "./pages/AllPage.ts";
 import { Page } from "./components/Page.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";

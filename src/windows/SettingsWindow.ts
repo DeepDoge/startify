@@ -1,5 +1,5 @@
-import Adw from "gi/Adw";
-import Gtk from "gi/Gtk";
+import Adw from "@girs/Adw";
+import Gtk from "@girs/Gtk";
 
 export function SettingsWindow(app: Adw.Application) {
 	const win = Adw.PreferencesWindow.new();

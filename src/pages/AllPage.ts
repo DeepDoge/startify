@@ -1,7 +1,7 @@
-import Adw from "gi/Adw";
-import GLib from "gi/GLib";
-import Gtk from "gi/Gtk";
-import Pango from "gi/Pango";
+import Adw from "@girs/Adw";
+import GLib from "@girs/GLib";
+import Gtk from "@girs/Gtk";
+import Pango from "@girs/Pango";
 import { Page } from "../components/Page.ts";
 import { AppLauncher, getAppLaunchers } from "../common/launchers.ts";
 import { SPACING } from "../common/constants.ts";
