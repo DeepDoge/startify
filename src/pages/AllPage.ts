@@ -39,7 +39,7 @@ export function AllPage(params: { navigation: AppNavigation }) {
 		const moreRow = Adw.ActionRow.new();
 		moreRow.set_activatable(true);
 		moreRow.connect("activated", () => {
-			navigation.push({ title: "Launchers", content: AllLaunchersPage(launchers).scroller });
+			navigation.push({ title: "Launchers", content: AllLaunchersPage(launchers).host });
 		});
 		moreRow.set_child(MoreBox());
 		launchersGroup.add(moreRow);

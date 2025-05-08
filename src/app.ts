@@ -89,7 +89,7 @@ app.connect("activate", () => {
 
 	const allPage = AllPage({ navigation });
 	viewStack.add_titled_with_icon(
-		allPage.scroller,
+		allPage.host,
 		"all",
 		"All",
 		"open-menu-symbolic",
@@ -97,7 +97,7 @@ app.connect("activate", () => {
 
 	const appImagesPage = Page();
 	viewStack.add_titled_with_icon(
-		appImagesPage.scroller,
+		appImagesPage.host,
 		"app-images",
 		"App Images",
 		"open-menu-symbolic",
