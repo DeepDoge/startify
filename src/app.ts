@@ -1,5 +1,3 @@
-#!/usr/bin/env -S deno run -A
-
 import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
