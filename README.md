@@ -7,3 +7,4 @@ Shouldn't take more than a day or two to publish first version.
 Manage AppImages, Launchers, Startup apps, Distroboxes and Distrobox apps, all in one place with best practices to keep your host clean.
 
 UPDATE 2: Gonna continue at May 12, 2025
+UPDATE 3: Couldn't continue. But will soon
