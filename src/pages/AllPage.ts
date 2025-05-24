@@ -2,74 +2,101 @@ import Adw from "@girs/Adw";
 import GLib from "@girs/GLib";
 import Gtk from "@girs/Gtk";
 import Pango from "@girs/Pango";
-import { Page } from "../components/Page.ts";
-import { AppLauncher, getAppLaunchers } from "../common/launchers.ts";
+import { AppContext } from "../app.ts";
+import { AppLauncher, getAppLaunchers } from "../common/applaunchers.ts";
 import { SPACING } from "../common/constants.ts";
-import { AppNavigation } from "../app.ts";
+import { Page } from "../components/Page.ts";
 
-export function AllPage(params: { navigation: AppNavigation }) {
-	const { navigation } = params;
+export function AllPage(ctx: AppContext) {
 	const self = Page();
 
-	const launchersGroup = Adw.PreferencesGroup.new();
-	self.content.append(launchersGroup);
-	launchersGroup.set_title("Launchers");
-	launchersGroup.set_description("Installed Apps");
-
 	const launchers = getAppLaunchers();
+	const appImageLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "appimage");
+
+	self.content.append(AppLaunchersGroup({
+		title: "All",
+		description: "All Applications",
+		launchers,
+	}, ctx));
+
+	self.content.append(AppLaunchersGroup({
+		title: "AppImages",
+		description: "Installed AppImage Applications",
+		launchers: appImageLaunchers,
+	}, ctx));
+
+	self.content.append(AppLaunchersGroup({
+		title: "Auto Start",
+		description: "Startup Applications",
+		launchers,
+	}, ctx));
+
+	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+
+	return self;
+}
+
+function AppLaunchersGroup(options: {
+	title: string;
+	description: string;
+	launchers: AppLauncher[];
+}, ctx: AppContext) {
+	const { title, description, launchers } = options;
+	const { navigation } = ctx;
+
+	const self = Adw.PreferencesGroup.new();
+	self.set_title(title);
+	self.set_description(description);
 
 	for (const launcher of launchers.values().take(3)) {
 		const row = Adw.ActionRow.new();
 		row.set_activatable(true);
 		row.connect("activated", () => {
 			const cmd = new Deno.Command("bash", {
-				args: ["-c", `nohup ${launcher.parsed.exec} >/dev/null 2>&1 &`],
+				args: ["-c", `nohup ${launcher.data.exec} >/dev/null 2>&1 &`],
 			});
 			cmd.spawn().unref();
 		});
-		row.set_child(TitlesAndIconBox({
-			icon: launcher.parsed.icon,
-			title: launcher.parsed.name,
-			subtitle: launcher.parsed.exec,
-		}));
+		row.set_child(LauncherItemBox(launcher));
 
-		launchersGroup.add(row);
+		self.add(row);
 	}
-	{
-		const moreRow = Adw.ActionRow.new();
-		moreRow.set_activatable(true);
-		moreRow.connect("activated", () => {
-			navigation.push({ title: "Launchers", content: AllLaunchersPage(launchers).host });
-		});
-		moreRow.set_child(MoreBox());
-		launchersGroup.add(moreRow);
-	}
+
+	const moreRow = Adw.ActionRow.new();
+	moreRow.set_activatable(true);
+	moreRow.connect("activated", () => {
+		navigation.push({ title: title, content: AllLaunchersPage(options).host });
+	});
+	moreRow.set_child(MoreBox());
+	self.add(moreRow);
 
 	return self;
 }
 
-function AllLaunchersPage(launchers: AppLauncher[]) {
+function AllLaunchersPage(options: {
+	title: string;
+	description: string;
+	launchers: AppLauncher[];
+}) {
+	const { title, description, launchers } = options;
+
 	const self = Page();
 
 	const launchersGroup = Adw.PreferencesGroup.new();
 	self.content.append(launchersGroup);
-	launchersGroup.set_title("Launchers");
-	launchersGroup.set_description("Installed Apps");
+	launchersGroup.set_title(title);
+	launchersGroup.set_description(description);
 
 	for (const launcher of launchers) {
 		const row = Adw.ActionRow.new();
 		row.set_activatable(true);
 		row.connect("activated", () => {
 			const cmd = new Deno.Command("bash", {
-				args: ["-c", `nohup ${launcher.parsed.exec} >/dev/null 2>&1 &`],
+				args: ["-c", `nohup ${launcher.data.exec} >/dev/null 2>&1 &`],
 			});
 			cmd.spawn().unref();
 		});
-		row.set_child(TitlesAndIconBox({
-			icon: launcher.parsed.icon,
-			title: launcher.parsed.name,
-			subtitle: launcher.parsed.exec,
-		}));
+		row.set_child(LauncherItemBox(launcher));
 
 		launchersGroup.add(row);
 	}
@@ -93,6 +120,14 @@ function MoreBox() {
 	self.append(image);
 
 	return self;
+}
+
+function LauncherItemBox(launcher: AppLauncher) {
+	return TitlesAndIconBox({
+		title: launcher.data.name,
+		subtitle: JSON.stringify(launcher.data.typeInfo),
+		icon: launcher.data.icon,
+	});
 }
 
 function TitlesAndIconBox(params: { title: string; subtitle: string; icon: string | null }) {
@@ -123,6 +158,7 @@ function TitlesAndIconBox(params: { title: string; subtitle: string; icon: strin
 
 	const subtitle = Gtk.Label.new();
 	infoBox.append(subtitle);
+	subtitle.set_halign(Gtk.Align.START);
 	subtitle.set_opacity(.5);
 	subtitle.set_ellipsize(Pango.EllipsizeMode.END);
 	subtitle.set_single_line_mode(false);

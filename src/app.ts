@@ -16,6 +16,8 @@ export type AppNavigation = {
 	push(params: { title: string; content: Gtk.Widget }): void;
 };
 
+export type AppContext = { navigation: AppNavigation };
+
 app.connect("activate", () => {
 	const win = Adw.ApplicationWindow.new(app);
 	win.set_default_size(800, 600);

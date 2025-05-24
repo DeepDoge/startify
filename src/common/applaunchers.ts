@@ -1,20 +1,32 @@
 import * as path from "jsr:@std/path@1.0.9";
+import { HOME } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 
-const HOME = Deno.env.get("HOME")!;
-
 export type AppLauncher = {
-	desktop: DesktopFile;
 	file: Deno.FileInfo;
-	parsed: {
+	raw: DesktopFile;
+	data: {
 		name: string;
 		exec: string;
+		execPath: string;
 		icon: string | null;
+		typeInfo: AppLauncher.TypeInfo;
 	};
 };
+export declare namespace AppLauncher {
+	export type TypeInfo =
+		| {
+			type: "unknown";
+		}
+		| {
+			type: "appimage";
+			portable: boolean;
+		};
+}
 
 export function getAppLaunchers(): AppLauncher[] {
 	const dirPath = path.join(HOME, ".local", "share", "applications");
+	if (!Deno.statSync(dirPath).isDirectory) return [];
 	const dirEntries = Array.from(Deno.readDirSync(dirPath));
 
 	const appEntries = dirEntries.map((entry): AppLauncher | null => {
@@ -37,13 +49,37 @@ export function getAppLaunchers(): AppLauncher[] {
 
 			const icon = desktopEntry["Icon"] ?? null;
 
+			const execPath = exec.match(/^"([^"]+)"|^(\S+)/)?.[1] ??
+				exec.match(/^(\S+)/)?.[1] ??
+				exec;
+
+			const type: AppLauncher.TypeInfo["type"] = execPath.toLowerCase().endsWith(".appimage")
+				? "appimage"
+				: "unknown";
+
+			let typeInfo: AppLauncher.TypeInfo;
+			if (type === "appimage") {
+				const portable = Deno.statSync(`${execPath}.home`).isDirectory;
+
+				typeInfo = {
+					type,
+					portable,
+				};
+			} else {
+				typeInfo = {
+					type: "unknown",
+				};
+			}
+
 			return {
-				desktop,
 				file: fileStats,
-				parsed: {
+				raw: desktop,
+				data: {
 					name,
 					exec,
+					execPath,
 					icon,
+					typeInfo,
 				},
 			};
 		} catch (throwed) {
@@ -55,5 +91,5 @@ export function getAppLaunchers(): AppLauncher[] {
 	return appEntries.filter((entry) => entry !== null).sort((a, b) =>
 		(b.file.mtime?.getTime() ?? b.file.ctime?.getTime() ?? -1) -
 		(a.file.mtime?.getTime() ?? a.file.ctime?.getTime() ?? -1)
-	);
+	).sort((a, b) => a.data.name.localeCompare(b.data.name));
 }
