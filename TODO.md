@@ -52,3 +52,10 @@
 ## Distrobox
 
 yeah later. manage distroboxes and export and stuff. actions etc
+
+## Other
+
+- [ ] custom actions that lets you uinstall the app and stuff by right clicking, shoudld normally open startify to do
+      it. but if it fails, it should have a fallback.
+- [ ] if actions doesnt match what they are suppose to be, then that means we updated them. so auto fix/update them
+      silently, slowly.
