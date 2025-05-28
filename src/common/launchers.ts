@@ -2,7 +2,7 @@ import * as path from "jsr:@std/path@1.0.9";
 import { HOME } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 
-export type AppLauncher = {
+export type Launcher = {
 	file: Deno.FileInfo;
 	raw: DesktopFile;
 	data: {
@@ -10,10 +10,10 @@ export type AppLauncher = {
 		exec: string;
 		execPath: string;
 		icon: string | null;
-		typeInfo: AppLauncher.TypeInfo;
+		typeInfo: Launcher.TypeInfo;
 	};
 };
-export declare namespace AppLauncher {
+export declare namespace Launcher {
 	export type TypeInfo =
 		| {
 			type: "unknown";
@@ -24,12 +24,12 @@ export declare namespace AppLauncher {
 		};
 }
 
-export function getAppLaunchers(): AppLauncher[] {
+export function getLaunchers(): Launcher[] {
 	const dirPath = path.join(HOME, ".local", "share", "applications");
 	if (!Deno.statSync(dirPath).isDirectory) return [];
 	const dirEntries = Array.from(Deno.readDirSync(dirPath));
 
-	const appEntries = dirEntries.map((entry): AppLauncher | null => {
+	const appEntries = dirEntries.map((entry): Launcher | null => {
 		if (!entry.isFile) return null;
 		if (!entry.name.endsWith(".desktop")) return null;
 		const filePath = path.join(dirPath, entry.name);
@@ -53,11 +53,11 @@ export function getAppLaunchers(): AppLauncher[] {
 				exec.match(/^(\S+)/)?.[1] ??
 				exec;
 
-			const type: AppLauncher.TypeInfo["type"] = execPath.toLowerCase().endsWith(".appimage")
+			const type: Launcher.TypeInfo["type"] = execPath.toLowerCase().endsWith(".appimage")
 				? "appimage"
 				: "unknown";
 
-			let typeInfo: AppLauncher.TypeInfo;
+			let typeInfo: Launcher.TypeInfo;
 			if (type === "appimage") {
 				const portable = Deno.statSync(`${execPath}.home`).isDirectory;
 

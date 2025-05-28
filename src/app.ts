@@ -1,8 +1,7 @@
 import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
-import { AllPage } from "./pages/AllPage.ts";
-import { Page } from "./components/Page.ts";
+import { AppsPage } from "./pages/AllPage.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";
 
 Adw.init();
@@ -87,22 +86,20 @@ app.connect("activate", () => {
 	app.add_action(settingsAction);
 	menu.append("Settings", `app.${settingsAction.get_name()}`);
 
-	const allPage = AllPage({ navigation });
-	viewStack.add_titled_with_icon(
+	const allPage = AppsPage({ navigation });
+	viewStack.add_titled(
 		allPage.host,
-		"all",
-		"All",
-		"open-menu-symbolic",
+		"apps",
+		"Apps",
 	);
 
-	const appImagesPage = Page();
-	viewStack.add_titled_with_icon(
+	const appImagesPage = AppsPage({ navigation });
+	viewStack.add_titled(
 		appImagesPage.host,
-		"app-images",
-		"App Images",
-		"open-menu-symbolic",
-	);
-	const appImagesLabel = Gtk.Label.new("App Images Page");
+		"startup",
+		"🚀 Startup",
+	).set_icon_name(null);
+	const appImagesLabel = Gtk.Label.new("Startup Apps & Commands");
 	appImagesPage.content.append(appImagesLabel);
 
 	win.present();

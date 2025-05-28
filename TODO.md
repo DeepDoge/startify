@@ -1,3 +1,9 @@
+## Style
+
+- Details page will be like GearLever
+- Lists and main pages are like Ignition's lists
+- ...
+
 ## List and Parse Launcher Type
 
 - [ ] AppImage
