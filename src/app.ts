@@ -1,6 +1,7 @@
 import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
+import { SPACING } from "./common/constants.ts";
 import { AppsPage } from "./pages/AllPage.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";
 
@@ -19,7 +20,7 @@ export type AppContext = { navigation: AppNavigation };
 
 app.connect("activate", () => {
 	const win = Adw.ApplicationWindow.new(app);
-	win.set_default_size(800, 600);
+	win.set_default_size(600, 525);
 
 	const breakpoint = Adw.Breakpoint.new(Adw.breakpoint_condition_parse("max-width: 500px"));
 	win.add_breakpoint(breakpoint);
@@ -38,69 +39,48 @@ app.connect("activate", () => {
 	};
 
 	const toolbarView = Adw.ToolbarView.new();
-	const toolbarViewNavigationPage = Adw.NavigationPage.new(toolbarView, "Home");
-	navigationView.push(toolbarViewNavigationPage);
-
-	const viewStack = Adw.ViewStack.new();
-	viewStack.set_vexpand(true);
-	toolbarView.set_content(viewStack);
+	navigationView.push(Adw.NavigationPage.new(toolbarView, "Home"));
 
 	const headerBar = new Adw.HeaderBar();
 	headerBar.set_centering_policy(Adw.CenteringPolicy.LOOSE);
 	toolbarView.add_top_bar(headerBar);
 
-	const switcherTitle = Adw.ViewSwitcherTitle.new();
-	switcherTitle.set_stack(viewStack);
-	headerBar.set_title_widget(switcherTitle);
+	const searchButton = Gtk.Button.new_from_icon_name("system-search-symbolic");
+	searchButton.set_valign(Gtk.Align.CENTER);
+	headerBar.pack_start(searchButton);
 
-	const switcherBar = Adw.ViewSwitcherBar.new();
-	switcherBar.set_stack(viewStack);
-	switcherBar.set_reveal(true);
-	toolbarView.add_bottom_bar(switcherBar);
+	const searchRevealer = Gtk.Revealer.new();
+	searchRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+	searchRevealer.set_reveal_child(false);
 
-	if (breakpoint === win.get_current_breakpoint()) {
-		switcherTitle.hide();
-		switcherBar.show();
-	} else {
-		switcherTitle.show();
-		switcherBar.hide();
-	}
-	breakpoint.connect("apply", () => {
-		switcherTitle.hide();
-		switcherBar.show();
+	const searchEntry = Gtk.SearchEntry.new();
+	searchEntry.set_hexpand(true);
+	searchEntry.set_placeholder_text("Search entries...");
+
+	searchButton.connect("clicked", () => {
+		searchRevealer.set_reveal_child(!searchRevealer.get_reveal_child());
 	});
-	breakpoint.connect("unapply", () => {
-		switcherTitle.show();
-		switcherBar.hide();
-	});
+
+	const searchBox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0);
+	searchBox.append(searchEntry);
+	searchBox.set_margin_bottom(SPACING);
+	searchRevealer.set_child(searchBox);
 
 	const menuButton = Gtk.MenuButton.new();
 	headerBar.pack_end(menuButton);
 	menuButton.set_icon_name("open-menu-symbolic");
-
 	const menu = Gio.Menu.new();
 	menuButton.set_popover(Gtk.PopoverMenu.new_from_model(menu));
+	{
+		const settingsAction = Gio.SimpleAction.new("settings", null);
+		settingsAction.connect("activate", () => SettingsWindow(app).present());
+		app.add_action(settingsAction);
+		menu.append("Settings", `app.${settingsAction.get_name()}`);
+	}
 
-	const settingsAction = Gio.SimpleAction.new("settings", null);
-	settingsAction.connect("activate", () => SettingsWindow(app).present());
-	app.add_action(settingsAction);
-	menu.append("Settings", `app.${settingsAction.get_name()}`);
-
-	const allPage = AppsPage({ navigation });
-	viewStack.add_titled(
-		allPage.host,
-		"apps",
-		"Apps",
-	);
-
-	const appImagesPage = AppsPage({ navigation });
-	viewStack.add_titled(
-		appImagesPage.host,
-		"startup",
-		"🚀 Startup",
-	).set_icon_name(null);
-	const appImagesLabel = Gtk.Label.new("Startup Apps & Commands");
-	appImagesPage.content.append(appImagesLabel);
+	const page = AppsPage({ navigation });
+	toolbarView.set_content(page.host);
+	page.container.prepend(searchRevealer);
 
 	win.present();
 });

@@ -12,21 +12,21 @@ export function AppsPage(ctx: AppContext) {
 	const launchers = getLaunchers();
 	const appImageLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "appimage");
 
-	self.content.append(LaunchersGroup(ctx, {
+	self.container.append(LaunchersGroup(ctx, {
 		title: "All",
 		description: "All Applications",
 		launchers,
 		take: 4,
 	}));
 
-	self.content.append(LaunchersGroup(ctx, {
+	self.container.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+
+	self.container.append(LaunchersGroup(ctx, {
 		title: "AppImages",
 		description: "Installed AppImage Applications",
 		launchers: appImageLaunchers,
 		take: 4,
 	}));
-
-	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
 
 	return self;
 }
@@ -66,7 +66,7 @@ function LaunchersGroup(
 		moreRow.set_activatable(true);
 		moreRow.connect("activated", () => {
 			const self = Page();
-			self.content.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
+			self.container.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
 			navigation.push({ title: title, content: self.host });
 		});
 		moreRow.set_child(MoreBox());
