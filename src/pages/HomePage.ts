@@ -11,9 +11,9 @@ export function HomePage(ctx: AppContext) {
 	const self = Page();
 
 	const launchers = getLaunchers();
-	const appImageLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "appimage");
-	const distroboxLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "distrobox");
-	const otherLaunchers = launchers.filter((launchers) => launchers.data.typeInfo.type === "unknown");
+	const appImageLaunchers = launchers.filter((launcher) => launcher.data.type.name === "appimage");
+	const distroboxLaunchers = launchers.filter((launcher) => launcher.data.type.name === "distrobox");
+	const otherLaunchers = launchers.filter((launchers) => launchers.data.type.name === "unknown");
 
 	self.content.append(LaunchersGroup(ctx, {
 		title: "AppImage Launchers",

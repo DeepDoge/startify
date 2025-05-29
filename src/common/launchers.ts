@@ -7,24 +7,34 @@ export type Launcher = {
 	raw: DesktopFile;
 	data: {
 		name: string;
+		description: string | null;
 		exec: string;
 		execPath: string;
 		icon: string | null;
-		typeInfo: Launcher.TypeInfo;
+		type: Launcher.Type;
 	};
 };
 export declare namespace Launcher {
-	export type TypeInfo =
+	export type Type =
 		| {
-			type: "unknown";
+			name: "unknown";
 		}
 		| {
-			type: "appimage";
+			name: "appimage";
 			portable: boolean;
 		}
 		| {
-			type: "distrobox";
+			name: "distrobox";
 		};
+}
+
+const launcherTypeNameMap: { [K in Launcher.Type["name"]]: string } = {
+	appimage: "AppImage",
+	distrobox: "Distrobox",
+	unknown: "Application",
+};
+export function formatLauncherTypeName(type: Launcher.Type["name"]) {
+	return launcherTypeNameMap[type];
 }
 
 export function getLaunchers(): Launcher[] {
@@ -50,7 +60,9 @@ export function getLaunchers(): Launcher[] {
 			const name = desktopEntry["Name"];
 			if (!name) return null;
 
-			const icon = desktopEntry["Icon"] ?? null;
+			const description = desktopEntry["Comment"] || null;
+
+			const icon = desktopEntry["Icon"] || null;
 
 			let execPath = path.resolve(
 				exec.match(/^"([^"]+)"|^(\S+)/)?.[1] ??
@@ -66,20 +78,20 @@ export function getLaunchers(): Launcher[] {
 				}
 			}
 
-			let typeInfo: Launcher.TypeInfo;
+			let typeInfo: Launcher.Type;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
 				const portable = Deno.statSync(`${execPath}.home`).isDirectory;
 				typeInfo = {
-					type: "appimage",
+					name: "appimage",
 					portable,
 				};
 			} else if (execPath === "distrobox" || execPath === "distrobox-enter") {
 				typeInfo = {
-					type: "distrobox",
+					name: "distrobox",
 				};
 			} else {
 				typeInfo = {
-					type: "unknown",
+					name: "unknown",
 				};
 			}
 
@@ -88,10 +100,11 @@ export function getLaunchers(): Launcher[] {
 				raw: desktop,
 				data: {
 					name,
+					description,
 					exec,
 					execPath,
 					icon,
-					typeInfo,
+					type: typeInfo,
 				},
 			};
 		} catch (throwed) {

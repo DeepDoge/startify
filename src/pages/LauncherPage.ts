@@ -1,7 +1,7 @@
 import Gtk from "@girs/Gtk";
 import Pango from "@girs/Pango";
 import { SPACING } from "../common/constants.ts";
-import { Launcher } from "../common/launchers.ts";
+import { formatLauncherTypeName, Launcher } from "../common/launchers.ts";
 import { html } from "../common/markup.ts";
 import { Page } from "../components/Page.ts";
 
@@ -18,10 +18,20 @@ export function LauncherPage(launcher: Launcher) {
 	icon.set_pixel_size(120);
 
 	const title = Gtk.Label.new();
+	title.set_halign(Gtk.Align.START);
 	title.set_wrap(true);
 	title.set_wrap_mode(Pango.WrapMode.WORD_CHAR);
 	title.set_markup(html`
 		<span size="x-large"><b>${launcher.data.name}</b></span>
+	`);
+
+	const subtitle = Gtk.Label.new();
+	subtitle.set_halign(Gtk.Align.START);
+	subtitle.set_wrap(true);
+	subtitle.set_wrap_mode(Pango.WrapMode.WORD_CHAR);
+	subtitle.set_opacity(.65);
+	subtitle.set_markup(html`
+		<small>${launcher.data.description ?? formatLauncherTypeName(launcher.data.type.name)}</small>
 	`);
 
 	const launchButton = Gtk.Button.new();
@@ -37,12 +47,15 @@ export function LauncherPage(launcher: Launcher) {
 	});
 
 	const header = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * 1.5);
-	const header_info = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
+	const header_info = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
 	header_info.set_valign(Gtk.Align.CENTER);
 
 	header.append(icon);
 	header.append(header_info);
 	header_info.append(title);
+	title.set_margin_bottom(SPACING * .25);
+	header_info.append(subtitle);
+	launchButton.set_margin_top(SPACING);
 	header_info.append(launchButton);
 
 	self.content.append(header);
