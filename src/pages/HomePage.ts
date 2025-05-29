@@ -19,7 +19,7 @@ export function HomePage(ctx: AppContext) {
 		title: "AppImage Launchers",
 		description: "Launchers for AppImages you have.",
 		launchers: appImageLaunchers,
-		take: 4,
+		take: Infinity,
 	}));
 
 	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
@@ -28,7 +28,7 @@ export function HomePage(ctx: AppContext) {
 		title: "Distrobox Launchers",
 		description: "Distrobox launchers you have.",
 		launchers: distroboxLaunchers,
-		take: 4,
+		take: Infinity,
 	}));
 
 	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
@@ -37,7 +37,7 @@ export function HomePage(ctx: AppContext) {
 		title: "Others",
 		description: "Other launchers you have.",
 		launchers: otherLaunchers,
-		take: 4,
+		take: Infinity,
 	}));
 
 	return self;
