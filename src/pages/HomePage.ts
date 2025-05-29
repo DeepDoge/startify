@@ -5,26 +5,38 @@ import { getLaunchers, Launcher } from "../common/launchers.ts";
 import { LauncherItemBox } from "../components/LauncherItemBox.ts";
 import { MoreBox } from "../components/MoreBox.ts";
 import { Page } from "../components/Page.ts";
+import { LauncherPage } from "./LauncherPage.ts";
 
-export function AppsPage(ctx: AppContext) {
+export function HomePage(ctx: AppContext) {
 	const self = Page();
 
 	const launchers = getLaunchers();
 	const appImageLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "appimage");
+	const distroboxLaunchers = launchers.filter((launcher) => launcher.data.typeInfo.type === "distrobox");
+	const otherLaunchers = launchers.filter((launchers) => launchers.data.typeInfo.type === "unknown");
 
-	self.container.append(LaunchersGroup(ctx, {
-		title: "All",
-		description: "All Applications",
-		launchers,
+	self.content.append(LaunchersGroup(ctx, {
+		title: "AppImage Launchers",
+		description: "Launchers for AppImages you have.",
+		launchers: appImageLaunchers,
 		take: 4,
 	}));
 
-	self.container.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
 
-	self.container.append(LaunchersGroup(ctx, {
-		title: "AppImages",
-		description: "Installed AppImage Applications",
-		launchers: appImageLaunchers,
+	self.content.append(LaunchersGroup(ctx, {
+		title: "Distrobox Launchers",
+		description: "Distrobox launchers you have.",
+		launchers: distroboxLaunchers,
+		take: 4,
+	}));
+
+	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+
+	self.content.append(LaunchersGroup(ctx, {
+		title: "Others",
+		description: "Other launchers you have.",
+		launchers: otherLaunchers,
 		take: 4,
 	}));
 
@@ -51,10 +63,7 @@ function LaunchersGroup(
 		const row = Adw.ActionRow.new();
 		row.set_activatable(true);
 		row.connect("activated", () => {
-			const cmd = new Deno.Command("bash", {
-				args: ["-c", `nohup ${launcher.data.exec} >/dev/null 2>&1 &`],
-			});
-			cmd.spawn().unref();
+			navigation.push({ title: launcher.data.name, page: LauncherPage(launcher) });
 		});
 		row.set_child(LauncherItemBox(launcher));
 
@@ -65,9 +74,9 @@ function LaunchersGroup(
 		const moreRow = Adw.ActionRow.new();
 		moreRow.set_activatable(true);
 		moreRow.connect("activated", () => {
-			const self = Page();
-			self.container.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
-			navigation.push({ title: title, content: self.host });
+			const morePage = Page();
+			morePage.content.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
+			navigation.push({ title: title, page: morePage });
 		});
 		moreRow.set_child(MoreBox());
 		self.add(moreRow);

@@ -5,7 +5,6 @@ import { SPACING } from "../common/constants.ts";
 export type Page = {
 	host: Gtk.ScrolledWindow;
 	content: Gtk.Box;
-	container: Gtk.Box;
 };
 
 export function Page(): Page {
@@ -27,7 +26,6 @@ export function Page(): Page {
 
 	return {
 		host,
-		content,
-		container,
+		content: container,
 	};
 }

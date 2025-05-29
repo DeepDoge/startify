@@ -1,7 +1,7 @@
 import Gtk from "@girs/Gtk";
-import { SPACING } from "../common/constants.ts";
 import Pango from "@girs/Pango";
-import GLib from "@girs/GLib";
+import { SPACING } from "../common/constants.ts";
+import { html } from "../common/markup.ts";
 
 export function TitlesAndIconBox(params: { title: string; subtitle: string; icon: string | null }) {
 	const self = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING);
@@ -35,7 +35,9 @@ export function TitlesAndIconBox(params: { title: string; subtitle: string; icon
 	subtitle.set_opacity(.5);
 	subtitle.set_ellipsize(Pango.EllipsizeMode.END);
 	subtitle.set_single_line_mode(false);
-	subtitle.set_markup(`<small>${GLib.markup_escape_text(params.subtitle, -1)}</small>`);
+	subtitle.set_markup(html`
+		<small>${params.subtitle}</small>
+	`);
 
 	return self;
 }

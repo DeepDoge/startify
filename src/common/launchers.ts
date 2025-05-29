@@ -1,5 +1,5 @@
 import * as path from "jsr:@std/path@1.0.9";
-import { HOME } from "./constants.ts";
+import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 
 export type Launcher = {
@@ -21,6 +21,9 @@ export declare namespace Launcher {
 		| {
 			type: "appimage";
 			portable: boolean;
+		}
+		| {
+			type: "distrobox";
 		};
 }
 
@@ -49,21 +52,30 @@ export function getLaunchers(): Launcher[] {
 
 			const icon = desktopEntry["Icon"] ?? null;
 
-			const execPath = exec.match(/^"([^"]+)"|^(\S+)/)?.[1] ??
-				exec.match(/^(\S+)/)?.[1] ??
-				exec;
+			let execPath = path.resolve(
+				exec.match(/^"([^"]+)"|^(\S+)/)?.[1] ??
+					exec.match(/^(\S+)/)?.[1] ??
+					exec,
+			);
 
-			const type: Launcher.TypeInfo["type"] = execPath.toLowerCase().endsWith(".appimage")
-				? "appimage"
-				: "unknown";
+			// Try to trim if execPath starts with a PATH entry
+			for (const p of PATH) {
+				if (execPath.startsWith(path.join(p, "/"))) {
+					execPath = path.basename(execPath);
+					break;
+				}
+			}
 
 			let typeInfo: Launcher.TypeInfo;
-			if (type === "appimage") {
+			if (execPath.toLowerCase().endsWith(".appimage")) {
 				const portable = Deno.statSync(`${execPath}.home`).isDirectory;
-
 				typeInfo = {
-					type,
+					type: "appimage",
 					portable,
+				};
+			} else if (execPath === "distrobox" || execPath === "distrobox-enter") {
+				typeInfo = {
+					type: "distrobox",
 				};
 			} else {
 				typeInfo = {

@@ -2,8 +2,9 @@ import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
 import { SPACING } from "./common/constants.ts";
-import { AppsPage } from "./pages/AllPage.ts";
+import { HomePage } from "./pages/HomePage.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";
+import { Page } from "./components/Page.ts";
 
 Adw.init();
 
@@ -13,7 +14,7 @@ const app = Adw.Application.new(
 );
 
 export type AppNavigation = {
-	push(params: { title: string; content: Gtk.Widget }): void;
+	push(params: { title: string; page: Page }): void;
 };
 
 export type AppContext = { navigation: AppNavigation };
@@ -28,12 +29,12 @@ app.connect("activate", () => {
 	const navigationView = Adw.NavigationView.new();
 	win.set_content(navigationView);
 	const navigation: AppNavigation = {
-		push({ content, title }) {
+		push({ page, title }) {
 			const toolbarView = Adw.ToolbarView.new();
 			const headerBar = Adw.HeaderBar.new();
 			headerBar.set_show_back_button(true);
 			toolbarView.add_top_bar(headerBar);
-			toolbarView.set_content(content);
+			toolbarView.set_content(page.host);
 			navigationView.push(Adw.NavigationPage.new(toolbarView, title));
 		},
 	};
@@ -78,9 +79,9 @@ app.connect("activate", () => {
 		menu.append("Settings", `app.${settingsAction.get_name()}`);
 	}
 
-	const page = AppsPage({ navigation });
+	const page = HomePage({ navigation });
 	toolbarView.set_content(page.host);
-	page.container.prepend(searchRevealer);
+	page.content.prepend(searchRevealer);
 
 	win.present();
 });
