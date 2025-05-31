@@ -14,7 +14,7 @@
 
 ## Launcher Details Page For Unknown Type
 
-- [ ] basic of ui with logo, name description and launche button and stuff.
+- [x] basic of ui with logo, name description and launche button and stuff.
 - [ ] edit create or delete `.desktop` file entries and stuff.
 - [ ] add support for known entries while stilling allowing arbitary ones.
 - [ ] use general `.desktop` file edit page as advanced mode for other type like AppImages
@@ -24,7 +24,7 @@
 
 ## AppImages
 
-- [ ] AppImage detail page is not launcher details page, but at the bottom have an advanced page button to edit it on
+- [x] AppImage detail page is not launcher details page, but at the bottom have an advanced page button to edit it on
       launcher details page.
 - [ ] check if appimage is inside defined AppImages directory, if not, have a recommaneded fixes banner at top with a
       "Fix" button to fix it and move it.
@@ -32,7 +32,7 @@
       the home at top with different color, when clicked go to the install page and "install" it.
 - [ ] check if appimage `.desktop` has an action for uninstall, remove. if not show a recommended fixes banner at top
       with a "Fix" button to fix it and add it.
-- [ ] check if appimage has a portable direcotry, if it doesnt show a button that creatres it, if it exists, show a
+- [x] check if appimage has a portable direcotry, if it doesnt show a button that creatres it, if it exists, show a
       button to clear and remove it, but option for removing it should be hidden under a more options or something.
 - [ ] uninstall action should ask for confirmation and have checkbox that says, "Keep portable mode directoriesi" or
       something similar, if there is one.
