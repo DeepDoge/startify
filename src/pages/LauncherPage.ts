@@ -1,10 +1,11 @@
+import Adw from "@girs/Adw";
 import Gtk from "@girs/Gtk";
 import Pango from "@girs/Pango";
 import { SPACING } from "../common/constants.ts";
 import { formatLauncherTypeName, Launcher } from "../common/launchers.ts";
 import { html } from "../common/markup.ts";
+import { bind, buttonClass, formatBytes, removeChildren } from "../common/utils.ts";
 import { Page } from "../components/Page.ts";
-import { bind, buttonClass, removeChildren } from "../common/utils.ts";
 
 export function LauncherPage(launcher: Launcher) {
 	const self = Page();
@@ -60,41 +61,79 @@ export function LauncherPage(launcher: Launcher) {
 
 	const type = launcher.data.type;
 	if (type.name === "appimage") {
-		bind(content, () =>
-			type.portable.follow((portable) => {
-				removeChildren(content);
+		const sizeGroup = Adw.PreferencesGroup.new();
+		sizeGroup.set_title("Size");
+		content.append(sizeGroup);
 
-				// TODO: Have a whole section for portable home, show its current size and full path and stuff.
-				// TODO: And if its a symlink also detect it and show it on the GUI is well
-				if (portable) {
-					const clearButton = Gtk.Button.new();
-					clearButton.set_css_classes(buttonClass("destructive-action pill"));
-					clearButton.set_label("Clear Portable Home");
-					clearButton.set_halign(Gtk.Align.START);
-					clearButton.connect("clicked", () => {
-						type.clearPortableHome();
-					});
-					content.append(clearButton);
+		{
+			const row = Adw.ActionRow.new();
+			row.set_activatable(false);
+			const rowContent = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING);
+			rowContent.set_margin_top(SPACING);
+			rowContent.set_margin_bottom(SPACING);
+			rowContent.set_margin_start(SPACING);
+			rowContent.set_margin_end(SPACING);
+			row.set_child(rowContent);
+			sizeGroup.add(row);
 
-					const deleteButton = Gtk.Button.new();
-					deleteButton.set_label("Delete Portable Home");
-					deleteButton.set_css_classes(buttonClass("destructive-action pill"));
-					deleteButton.set_halign(Gtk.Align.START);
-					deleteButton.connect("clicked", () => {
-						type.deletePortableHome();
-					});
-					content.append(deleteButton);
-				} else {
-					const createButton = Gtk.Button.new();
-					createButton.set_css_classes(buttonClass("pill"));
-					createButton.set_label("Create Portable Home");
-					createButton.set_halign(Gtk.Align.START);
-					createButton.connect("clicked", () => {
-						type.createPortableHome();
-					});
-					content.append(createButton);
-				}
-			}, true));
+			const infoBox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
+			infoBox.set_hexpand(true);
+			rowContent.append(infoBox);
+
+			const label = Gtk.Label.new();
+			label.set_halign(Gtk.Align.START);
+			label.set_markup(html`
+				<b>Portable Home</b>
+			`);
+			infoBox.append(label);
+
+			const sizeText = Gtk.Label.new();
+			sizeText.set_halign(Gtk.Align.START);
+			bind(sizeText, () =>
+				type.portable.size.follow((size) => {
+					sizeText.set_markup(html`
+						<small>${formatBytes(size)}</small>
+					`);
+				}, true));
+			sizeText.set_opacity(.65);
+			infoBox.append(sizeText);
+
+			const actionBox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * .5);
+			rowContent.append(actionBox);
+			bind(actionBox, (box) =>
+				type.portable.exist.follow((portable) => {
+					removeChildren(box);
+
+					if (portable) {
+						const clearButton = Gtk.Button.new();
+						clearButton.set_css_classes(buttonClass("destructive-action"));
+						clearButton.set_label("Clear");
+						clearButton.set_halign(Gtk.Align.START);
+						clearButton.connect("clicked", () => {
+							type.portable.clear();
+						});
+						box.append(clearButton);
+
+						const deleteButton = Gtk.Button.new();
+						deleteButton.set_label("Delete");
+						deleteButton.set_css_classes(buttonClass("destructive-action"));
+						deleteButton.set_halign(Gtk.Align.START);
+						deleteButton.connect("clicked", () => {
+							type.portable.delete();
+						});
+						box.append(deleteButton);
+					} else {
+						const createButton = Gtk.Button.new();
+						createButton.set_css_classes(buttonClass("pill"));
+						createButton.set_label("Create Portable Home");
+						createButton.set_halign(Gtk.Align.START);
+						createButton.connect("clicked", () => {
+							type.portable.create();
+						});
+						box.append(createButton);
+					}
+				}, true));
+		}
 	}
 
 	self.content.append(header);

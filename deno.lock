@@ -4,6 +4,7 @@
     "jsr:@std/html@*": "1.0.4",
     "jsr:@std/html@1.0.4": "1.0.4",
     "jsr:@std/path@1.0.9": "1.0.9",
+    "jsr:@std/path@^1.1.0": "1.1.0",
     "npm:@girs/adw-1@*": "1.8.0-4.0.0-beta.23",
     "npm:@girs/cairo-1.0@*": "1.0.0-4.0.0-beta.23",
     "npm:@girs/gio-2.0@*": "2.84.0-4.0.0-beta.23",
@@ -17,6 +18,9 @@
     },
     "@std/path@1.0.9": {
       "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
+    },
+    "@std/path@1.1.0": {
+      "integrity": "ddc94f8e3c275627281cbc23341df6b8bcc874d70374f75fec2533521e3d6886"
     }
   },
   "npm": {
@@ -255,5 +259,10 @@
     "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/error.ts": "aa9e770842896cbae1fd9e0b882189d4a71b0e26bfd41513d3c43525d06fbc3b",
     "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/gobject.js": "0930a408995669d795320caa3554ebe025f3b2281e59d5a7e281fad8d3161cfb",
     "https://raw.githubusercontent.com/ahgilak/deno_gi/main/src/utils/string.ts": "2d165e0e0fc7bcf92d02299d37f11255e2cbba5e26fc9842bbdacbd3fc2d4cf0"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/path@^1.1.0"
+    ]
   }
 }

@@ -1,7 +1,8 @@
-import * as path from "jsr:@std/path@1.0.9";
+import * as path from "@std/path";
 import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 import { ref, Sync } from "./signals.ts";
+import { getDirectorySize } from "./utils.ts";
 
 export type Launcher = {
 	file: Deno.FileInfo;
@@ -22,10 +23,13 @@ export declare namespace Launcher {
 		}
 		| {
 			name: "appimage";
-			portable: Sync<boolean>;
-			createPortableHome(): void;
-			clearPortableHome(): void;
-			deletePortableHome(): void;
+			portable: {
+				exist: Sync<boolean>;
+				size: Sync<number>;
+				create(): void;
+				clear(): void;
+				delete(): void;
+			};
 		}
 		| {
 			name: "distrobox";
@@ -85,28 +89,34 @@ export function getLaunchers(): Launcher[] {
 			let typeInfo: Launcher.Type;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
 				const portableHomePath = `${execPath}.home`;
-				const portable = ref(false);
+				const exist = ref(false);
 				try {
-					portable.set(Deno.statSync(portableHomePath).isDirectory);
+					exist.set(Deno.statSync(portableHomePath).isDirectory);
 				} catch {
 					/*  */
 				}
+				const size = ref(exist.get() ? getDirectorySize(portableHomePath) : 0);
 				typeInfo = {
 					name: "appimage",
-					portable,
-					createPortableHome() {
-						Deno.mkdirSync(portableHomePath, { recursive: true });
-						portable.set(true);
-					},
-					clearPortableHome() {
-						for (const entry of Deno.readDirSync(portableHomePath)) {
-							const entryPath = path.join(portableHomePath, entry.name);
-							Deno.removeSync(entryPath, { recursive: true });
-						}
-					},
-					deletePortableHome() {
-						Deno.removeSync(portableHomePath, { recursive: true });
-						portable.set(false);
+					portable: {
+						exist,
+						size,
+						create() {
+							Deno.mkdirSync(portableHomePath, { recursive: true });
+							exist.set(true);
+						},
+						clear() {
+							for (const entry of Deno.readDirSync(portableHomePath)) {
+								const entryPath = path.join(portableHomePath, entry.name);
+								Deno.removeSync(entryPath, { recursive: true });
+							}
+							size.set(0);
+						},
+						delete() {
+							Deno.removeSync(portableHomePath, { recursive: true });
+							exist.set(false);
+							size.set(0);
+						},
 					},
 				};
 			} else if (execPath === "distrobox" || execPath === "distrobox-enter") {
