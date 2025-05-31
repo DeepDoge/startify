@@ -1,8 +1,10 @@
 import * as path from "@std/path";
 import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
-import { ref, Sync } from "./signals.ts";
-import { getDirectorySize } from "./utils.ts";
+import { ref, Sync, sync } from "./signals.ts";
+import { coroutine } from "./utils/coroutine.ts";
+import { getDirectorySize } from "./utils/size.ts";
+import { tryCatch } from "./utils/try.ts";
 
 export type Launcher = {
 	file: Deno.FileInfo;
@@ -89,13 +91,17 @@ export function getLaunchers(): Launcher[] {
 			let typeInfo: Launcher.Type;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
 				const portableHomePath = `${execPath}.home`;
-				const exist = ref(false);
-				try {
-					exist.set(Deno.statSync(portableHomePath).isDirectory);
-				} catch {
-					/*  */
-				}
-				const size = ref(exist.get() ? getDirectorySize(portableHomePath) : 0);
+				const exist = ref<boolean>(tryCatch(() => Deno.statSync(portableHomePath).isDirectory) ?? false);
+				const updateSizeTrigger = ref(0);
+				const updateSize = () => updateSizeTrigger.val++;
+				const size = sync<number>((set) =>
+					coroutine(function* (timeout) {
+						while (true) {
+							set(exist.get() ? getDirectorySize(portableHomePath) : 0);
+							yield timeout(1000);
+						}
+					})
+				);
 				typeInfo = {
 					name: "appimage",
 					portable: {
@@ -110,12 +116,11 @@ export function getLaunchers(): Launcher[] {
 								const entryPath = path.join(portableHomePath, entry.name);
 								Deno.removeSync(entryPath, { recursive: true });
 							}
-							size.set(0);
+							updateSize();
 						},
 						delete() {
 							Deno.removeSync(portableHomePath, { recursive: true });
 							exist.set(false);
-							size.set(0);
 						},
 					},
 				};

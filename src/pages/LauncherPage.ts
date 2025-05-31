@@ -3,9 +3,12 @@ import Gtk from "@girs/Gtk";
 import Pango from "@girs/Pango";
 import { SPACING } from "../common/constants.ts";
 import { formatLauncherTypeName, Launcher } from "../common/launchers.ts";
-import { html } from "../common/markup.ts";
-import { bind, buttonClass, formatBytes, removeChildren } from "../common/utils.ts";
+import { html } from "../common/utils/markup.ts";
 import { Page } from "../components/Page.ts";
+import { buttonClass } from "../common/utils/buttonClass.ts";
+import { bind } from "../common/utils/bind.ts";
+import { formatBytes } from "../common/utils/format.ts";
+import { removeChildren } from "../common/utils/gtk.ts";
 
 export function LauncherPage(launcher: Launcher) {
 	const self = Page();

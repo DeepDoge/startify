@@ -2,9 +2,9 @@ import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
 import { SPACING } from "./common/constants.ts";
+import { Page } from "./components/Page.ts";
 import { HomePage } from "./pages/HomePage.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";
-import { Page } from "./components/Page.ts";
 
 Adw.init();
 
@@ -86,4 +86,4 @@ app.connect("activate", () => {
 	win.present();
 });
 
-app.run([]);
+app.run();

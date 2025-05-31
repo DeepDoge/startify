@@ -1,7 +1,7 @@
 import Gtk from "@girs/Gtk";
 import Pango from "@girs/Pango";
 import { SPACING } from "../common/constants.ts";
-import { html } from "../common/markup.ts";
+import { html } from "../common/utils/markup.ts";
 
 export function TitlesAndIconBox(params: { title: string; subtitle: string; icon: string | null }) {
 	const self = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING);
