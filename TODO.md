@@ -45,7 +45,7 @@ A structured plan for building **Startify**, an opinionated launcher/autostart/A
   - Suggest fix with a banner and "Fix" button
 - [x] Detect portable directories
   - Create if missing
-  - Allow clearing via hidden "More Options"
+  - Allow clearing, and deleting.
 - [ ] Uninstall process:
   - Ask for confirmation
   - Include "Keep portable directory" checkbox if applicable
