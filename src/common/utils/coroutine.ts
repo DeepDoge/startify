@@ -11,9 +11,9 @@ export const timeout: Timeout = (ms) => {
 };
 
 export function coroutine(
-	fn: (timeout: Timeout) => Generator<Next, void, unknown>,
+	fn: () => Generator<Next, void, unknown>,
 ): () => void {
-	const generator = fn(timeout);
+	const generator = fn();
 	const next = () => generator.next().value?.(next);
 	next();
 	return () => generator.return?.();

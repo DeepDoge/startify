@@ -2,7 +2,7 @@ import * as path from "@std/path";
 import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 import { ref, Sync, sync } from "./signals.ts";
-import { coroutine } from "./utils/coroutine.ts";
+import { coroutine, timeout } from "./utils/coroutine.ts";
 import { getDirectorySize } from "./utils/size.ts";
 import { tryCatch } from "./utils/try.ts";
 
@@ -95,7 +95,7 @@ export function getLaunchers(): Launcher[] {
 				const updateSizeTrigger = ref(0);
 				const updateSize = () => updateSizeTrigger.val++;
 				const size = sync<number>((set) =>
-					coroutine(function* (timeout) {
+					coroutine(function* () {
 						while (true) {
 							set(exist.get() ? getDirectorySize(portableHomePath) : 0);
 							yield timeout(1000);
