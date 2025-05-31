@@ -11,9 +11,9 @@ export function HomePage(ctx: AppContext) {
 	const self = Page();
 
 	const launchers = getLaunchers();
-	const appImageLaunchers = launchers.filter((launcher) => launcher.data.type.name === "appimage");
-	const distroboxLaunchers = launchers.filter((launcher) => launcher.data.type.name === "distrobox");
-	const otherLaunchers = launchers.filter((launchers) => launchers.data.type.name === "unknown");
+	const appImageLaunchers = launchers.filter((launcher) => launcher.info.type === "appimage");
+	const distroboxLaunchers = launchers.filter((launcher) => launcher.info.type === "distrobox");
+	const otherLaunchers = launchers.filter((launchers) => launchers.info.type === "unknown");
 
 	self.content.append(LaunchersGroup(ctx, {
 		title: "AppImage Launchers",
@@ -63,7 +63,7 @@ function LaunchersGroup(
 		const row = Adw.ActionRow.new();
 		row.set_activatable(true);
 		row.connect("activated", () => {
-			navigation.push({ title: launcher.data.name, page: LauncherPage(launcher) });
+			navigation.push({ title: launcher.desktop.name, page: LauncherPage(launcher) });
 		});
 		row.set_child(LauncherItemBox(launcher));
 

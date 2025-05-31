@@ -1,30 +1,34 @@
 import * as path from "@std/path";
 import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
-import { ref, Sync, sync } from "./signals.ts";
+import { computed, Sync, sync } from "./signals.ts";
 import { coroutine, timeout } from "./utils/coroutine.ts";
 import { getDirectorySize } from "./utils/size.ts";
 import { tryCatch } from "./utils/try.ts";
 
 export type Launcher = {
-	file: Deno.FileInfo;
-	raw: DesktopFile;
-	data: {
+	desktop: {
 		name: string;
 		description: string | null;
 		exec: string;
 		execPath: string;
 		icon: string | null;
-		type: Launcher.Type;
+		file: Deno.FileInfo;
+		raw: DesktopFile;
 	};
+	info: Launcher.Info;
 };
 export declare namespace Launcher {
-	export type Type =
+	export type Info =
 		| {
-			name: "unknown";
+			type: "unknown";
 		}
 		| {
-			name: "appimage";
+			type: "appimage";
+			appimage: {
+				exist: Sync<boolean>;
+				size: Sync<number>;
+			};
 			portable: {
 				exist: Sync<boolean>;
 				size: Sync<number>;
@@ -34,16 +38,16 @@ export declare namespace Launcher {
 			};
 		}
 		| {
-			name: "distrobox";
+			type: "distrobox";
 		};
 }
 
-const launcherTypeNameMap: { [K in Launcher.Type["name"]]: string } = {
+const launcherTypeNameMap: { [K in Launcher.Info["type"]]: string } = {
 	appimage: "AppImage",
 	distrobox: "Distrobox",
 	unknown: "Application",
 };
-export function formatLauncherTypeName(type: Launcher.Type["name"]) {
+export function formatLauncherTypeName(type: Launcher.Info["type"]) {
 	return launcherTypeNameMap[type];
 }
 
@@ -56,12 +60,12 @@ export function getLaunchers(): Launcher[] {
 		if (!entry.isFile) return null;
 		if (!entry.name.endsWith(".desktop")) return null;
 		const filePath = path.join(dirPath, entry.name);
-		const fileStats = Deno.statSync(filePath);
-		const file = Deno.readFileSync(filePath);
-		const fileContent = new TextDecoder("utf-8").decode(file);
+		const file = Deno.statSync(filePath);
+		const fileBuffer = Deno.readFileSync(filePath);
+		const fileContent = new TextDecoder("utf-8").decode(fileBuffer);
 		try {
-			const desktop = parseDesktopFile(fileContent);
-			const desktopEntry = desktop["Desktop Entry"];
+			const raw = parseDesktopFile(fileContent);
+			const desktopEntry = raw["Desktop Entry"];
 			if (!desktopEntry) return null;
 			const fuck = /\s*%[fFuUick]/g; // %F, %U, %f, %u, %i, %c, %k
 			const exec = desktopEntry["Exec"]?.replace(fuck, "").trim();
@@ -88,63 +92,83 @@ export function getLaunchers(): Launcher[] {
 				}
 			}
 
-			let typeInfo: Launcher.Type;
+			let info: Launcher.Info;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
-				const portableHomePath = `${execPath}.home`;
-				const exist = ref<boolean>(tryCatch(() => Deno.statSync(portableHomePath).isDirectory) ?? false);
-				const updateSizeTrigger = ref(0);
-				const updateSize = () => updateSizeTrigger.val++;
-				const size = sync<number>((set) =>
-					coroutine(function* () {
-						while (true) {
-							set(exist.get() ? getDirectorySize(portableHomePath) : 0);
-							yield timeout(1000);
-						}
-					})
-				);
-				typeInfo = {
-					name: "appimage",
-					portable: {
+				const appimage = (): (Launcher.Info & { type: "appimage" })["appimage"] => {
+					const stat = sync<Deno.FileInfo | null>((set) =>
+						coroutine(function* () {
+							while (true) {
+								set(tryCatch(() => Deno.statSync(execPath)) ?? null);
+								yield timeout(250);
+							}
+						})
+					);
+					const exist = computed(() => (stat.get()?.isFile ?? false));
+					const size = computed(() => stat.get()?.size ?? 0);
+
+					return {
+						exist,
+						size,
+					};
+				};
+
+				const portable = (): (Launcher.Info & { type: "appimage" })["portable"] => {
+					const homePath = `${execPath}.home`;
+					const stat = sync<Deno.FileInfo | null>((set) =>
+						coroutine(function* () {
+							while (true) {
+								set(tryCatch(() => Deno.statSync(homePath)) ?? null);
+								yield timeout(250);
+							}
+						})
+					);
+					const exist = computed(() => stat.get()?.isDirectory ?? false);
+					const size = computed(() => stat.get() ? getDirectorySize(homePath) : 0);
+
+					return {
 						exist,
 						size,
 						create() {
-							Deno.mkdirSync(portableHomePath, { recursive: true });
-							exist.set(true);
+							Deno.mkdirSync(homePath, { recursive: true });
 						},
 						clear() {
-							for (const entry of Deno.readDirSync(portableHomePath)) {
-								const entryPath = path.join(portableHomePath, entry.name);
+							for (const entry of Deno.readDirSync(homePath)) {
+								const entryPath = path.join(homePath, entry.name);
 								Deno.removeSync(entryPath, { recursive: true });
 							}
-							updateSize();
 						},
 						delete() {
-							Deno.removeSync(portableHomePath, { recursive: true });
-							exist.set(false);
+							Deno.removeSync(homePath, { recursive: true });
 						},
-					},
+					};
+				};
+
+				info = {
+					type: "appimage",
+					appimage: appimage(),
+					portable: portable(),
 				};
 			} else if (execPath === "distrobox" || execPath === "distrobox-enter") {
-				typeInfo = {
-					name: "distrobox",
+				info = {
+					type: "distrobox",
 				};
 			} else {
-				typeInfo = {
-					name: "unknown",
+				info = {
+					type: "unknown",
 				};
 			}
 
 			return {
-				file: fileStats,
-				raw: desktop,
-				data: {
+				desktop: {
 					name,
 					description,
 					exec,
 					execPath,
 					icon,
-					type: typeInfo,
+					file,
+					raw,
 				},
+				info,
 			};
 		} catch (throwed) {
 			console.error(throwed);
@@ -153,7 +177,7 @@ export function getLaunchers(): Launcher[] {
 	});
 
 	return appEntries.filter((entry) => entry !== null).sort((a, b) =>
-		(b.file.mtime?.getTime() ?? b.file.ctime?.getTime() ?? -1) -
-		(a.file.mtime?.getTime() ?? a.file.ctime?.getTime() ?? -1)
-	).sort((a, b) => a.data.name.localeCompare(b.data.name));
+		(b.desktop.file.mtime?.getTime() ?? b.desktop.file.ctime?.getTime() ?? -1) -
+		(a.desktop.file.mtime?.getTime() ?? a.desktop.file.ctime?.getTime() ?? -1)
+	).sort((a, b) => a.desktop.name.localeCompare(b.desktop.name));
 }

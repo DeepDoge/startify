@@ -3,8 +3,8 @@ import { TitlesAndIconBox } from "./TitlesAndIconBox.ts";
 
 export function LauncherItemBox(launcher: Launcher) {
 	return TitlesAndIconBox({
-		title: launcher.data.name,
-		subtitle: launcher.data.description ?? formatLauncherTypeName(launcher.data.type.name),
-		icon: launcher.data.icon,
+		title: launcher.desktop.name,
+		subtitle: launcher.desktop.description ?? formatLauncherTypeName(launcher.info.type),
+		icon: launcher.desktop.icon,
 	});
 }
