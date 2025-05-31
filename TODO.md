@@ -1,70 +1,91 @@
-## Style
+# ✅ Startify – Development TODO
 
-- Details page will be like GearLever
-- Lists and main pages are like Ignition's lists
-- ...
+A structured plan for building **Startify**, an opinionated launcher/autostart/AppImage management tool.
 
-## List and Parse Launcher Type
+---
 
-- [ ] AppImage
-- [ ] Distrobox Terminal
-- [ ] Distrobox Export
-- [ ] Startup
-- [ ] Other, Unknown
+## 🎨 Style & UI Design
 
-## Launcher Details Page For Unknown Type
+- [x] Details page styled like **GearLever**
+- [x] Lists and main pages styled like **Ignition**
+- [ ] Visually separate "Advanced" or "Not Recommended" actions (e.g. darker tone, warning icon)
 
-- [x] basic of ui with logo, name description and launche button and stuff.
-- [ ] edit create or delete `.desktop` file entries and stuff.
-- [ ] add support for known entries while stilling allowing arbitary ones.
-- [ ] use general `.desktop` file edit page as advanced mode for other type like AppImages
-- [ ] at the normal launchers page just have an option to launch the app or its actions. anything else that directly
-      edits the launcher hidden in an advanced page to edit desktop files directly. and its gone by a button at the
-      bottom, that clearly looks like and indicates its not recommeneded to change launchers raw like this.
+---
 
-## AppImages
+## 🚀 Launcher Type Support
 
-- [x] AppImage detail page is not launcher details page, but at the bottom have an advanced page button to edit it on
-      launcher details page.
-- [ ] check if appimage is inside defined AppImages directory, if not, have a recommaneded fixes banner at top with a
-      "Fix" button to fix it and move it.
-- [ ] check appimages inside AppImages directory, and if it doesnt have a launcher, show it in a different section on
-      the home at top with different color, when clicked go to the install page and "install" it.
-- [ ] check if appimage `.desktop` has an action for uninstall, remove. if not show a recommended fixes banner at top
-      with a "Fix" button to fix it and add it.
-- [x] check if appimage has a portable direcotry, if it doesnt show a button that creatres it, if it exists, show a
-      button to clear and remove it, but option for removing it should be hidden under a more options or something.
-- [ ] uninstall action should ask for confirmation and have checkbox that says, "Keep portable mode directoriesi" or
-      something similar, if there is one.
-- [ ] when app image started by double clicking or via file selector show an install page which is not the launcher
-      page. this page should extract app image and get .desktop file info and icons and stuff from there. for app
-      images.
-- [ ] have an env variables entiries input to edit envs at the beginning of the exec or something
-- [ ] before doing anything with a portable home, check if app is running, if its tell user to stop it.
+- [x] AppImage
+- [ ] Distrobox (Terminal-based)
+- [ ] Distrobox (Exported apps)
+- [ ] Startup (Autostart entries)
+- [ ] Unknown/Custom launchers
 
-## Startup
+---
 
-- [ ] each launcher has an option to set it a startup app, this wont copy paste the app to the autostart dir, but it
-      will symlink to there.
-- [ ] there is also a startup tab to show startup apps only, and their own details page, it might probably wrap/reuse
-      advanced launcher edit page.
-- [ ] while at statup tab, symlink startups cant be editted, you have to press a button to delete the symlink and create
-      a copy in place of it.
-- [ ] also auto detect already existing auto start `.desktop` files and try to match them with normal launchers. this
-      also matches the copied ones. it might use exec path. matched startups can only be viewed from launcher page, not
-      from startups page. launcher can have more than one startup. with different args or env, basically different exec.
-- [ ] if matched ones have same exec, suggest a fix to convert it into a symlink
-- [ ] on app's details page show startup execs if it has multiple different startups with different execs show them in a
-      entry list, that lets you remove edit and add more. a launcher can have more than one statup.
-- [ ] give error and dont save if statup exec doesnt include exec path while trying to edit it on app page.
+## 🔍 Launcher Details Page (Generic / Unknown Types)
 
-## Distrobox
+- [x] Basic UI with logo, name, description, and launch button
+- [ ] Create/edit/delete `.desktop` entries
+- [ ] Support for both known types and arbitrary entries
+- [ ] Use shared `.desktop` editor as "Advanced" mode
+- [ ] Normal launcher page: only launch and action buttons
+- [ ] Raw `.desktop` editing must be explicitly entered via a clearly marked advanced toggle
 
-yeah later. manage distroboxes and export and stuff. actions etc
+---
 
-## Other
+## 📦 AppImage Support
 
-- [ ] custom actions that lets you uinstall the app and stuff by right clicking, shoudld normally open startify to do
-      it. but if it fails, it should have a fallback.
-- [ ] if actions doesnt match what they are suppose to be, then that means we updated them. so auto fix/update them
-      silently, slowly.
+- [x] AppImage detail page is separate from launcher details
+- [ ] Detect if AppImage is **outside** defined AppImages folder
+  - Show a **"Fix"** banner and move the file
+- [ ] Detect AppImages **in folder** with **no launcher**
+  - Show these at top of home in a separate color-coded section
+  - Clicking one opens the "Install" flow
+- [ ] Detect if AppImage’s `.desktop` file has no uninstall/remove action
+  - Suggest fix with a banner and "Fix" button
+- [x] Detect portable directories
+  - Create if missing
+  - Allow clearing via hidden "More Options"
+- [ ] Uninstall process:
+  - Ask for confirmation
+  - Include "Keep portable directory" checkbox if applicable
+- [ ] Handle launch from file manager (double-clicked):
+  - Show "Install" page, not launcher detail
+- [ ] Add UI for setting **environment variables** at exec start
+- [ ] Before interacting with portable dir:
+  - Check if app is running; block and show message if so
+
+---
+
+## 🔁 Startup Integration
+
+- [ ] Enable/disable startup by creating **symlink** to `~/.config/autostart`
+- [ ] Add **Startup tab** to show startup-only apps
+  - Reuse advanced `.desktop` edit page
+- [ ] Disable editing of symlinked `.desktop` files
+  - Option to "Convert to real copy" and edit instead
+- [ ] Auto-detect existing `.desktop` files in autostart
+  - Match by `Exec` path and link them to main launchers
+  - Handle copies and duplicates
+- [ ] For matched entries with **identical `Exec`**, suggest converting to symlink
+- [ ] If app has multiple startup entries (different args/env):
+  - Show as editable list on details page
+- [ ] Validate `Exec` on edit: show error and prevent saving if invalid
+
+---
+
+## 📦 Distrobox Support (Planned)
+
+- [ ] Detect Distrobox containers
+- [ ] Manage Distrobox-exported `.desktop` entries
+- [ ] Provide Distrobox-specific actions (launch terminal, edit environment, etc.)
+
+---
+
+## ⚙️ Other Functionality
+
+- [ ] Custom right-click actions (e.g., Uninstall)
+  - Open Startify if available
+  - Fallback gracefully if not
+- [ ] Auto-fix outdated `.desktop` actions silently over time
+  - Detect mismatches and update in background
