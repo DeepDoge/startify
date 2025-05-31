@@ -4,7 +4,7 @@ import { SPACING } from "../common/constants.ts";
 import { formatLauncherTypeName, Launcher } from "../common/launchers.ts";
 import { html } from "../common/markup.ts";
 import { Page } from "../components/Page.ts";
-import { bind, removeChildren } from "../common/utils.ts";
+import { bind, buttonClass, removeChildren } from "../common/utils.ts";
 
 export function LauncherPage(launcher: Launcher) {
 	const self = Page();
@@ -45,7 +45,7 @@ export function LauncherPage(launcher: Launcher) {
 
 	const launchButton = Gtk.Button.new();
 	launchButton.set_label("Launch");
-	launchButton.get_style_context().add_class("suggested-action");
+	launchButton.set_css_classes(buttonClass("suggested-action"));
 	launchButton.set_halign(Gtk.Align.START);
 	launchButton.connect("clicked", () => {
 		const cmd = new Deno.Command("bash", {
@@ -64,8 +64,11 @@ export function LauncherPage(launcher: Launcher) {
 			type.portable.follow((portable) => {
 				removeChildren(content);
 
+				// TODO: Have a whole section for portable home, show its current size and full path and stuff.
+				// TODO: And if its a symlink also detect it and show it on the GUI is well
 				if (portable) {
 					const clearButton = Gtk.Button.new();
+					clearButton.set_css_classes(buttonClass("destructive-action pill"));
 					clearButton.set_label("Clear Portable Home");
 					clearButton.set_halign(Gtk.Align.START);
 					clearButton.connect("clicked", () => {
@@ -75,6 +78,7 @@ export function LauncherPage(launcher: Launcher) {
 
 					const deleteButton = Gtk.Button.new();
 					deleteButton.set_label("Delete Portable Home");
+					deleteButton.set_css_classes(buttonClass("destructive-action pill"));
 					deleteButton.set_halign(Gtk.Align.START);
 					deleteButton.connect("clicked", () => {
 						type.deletePortableHome();
@@ -82,6 +86,7 @@ export function LauncherPage(launcher: Launcher) {
 					content.append(deleteButton);
 				} else {
 					const createButton = Gtk.Button.new();
+					createButton.set_css_classes(buttonClass("pill"));
 					createButton.set_label("Create Portable Home");
 					createButton.set_halign(Gtk.Align.START);
 					createButton.connect("clicked", () => {

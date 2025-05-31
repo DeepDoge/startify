@@ -85,7 +85,12 @@ export function getLaunchers(): Launcher[] {
 			let typeInfo: Launcher.Type;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
 				const portableHomePath = `${execPath}.home`;
-				const portable = ref(Deno.statSync(portableHomePath).isDirectory);
+				const portable = ref(false);
+				try {
+					portable.set(Deno.statSync(portableHomePath).isDirectory);
+				} catch {
+					/*  */
+				}
 				typeInfo = {
 					name: "appimage",
 					portable,

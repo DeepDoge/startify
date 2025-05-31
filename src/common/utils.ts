@@ -18,3 +18,61 @@ export function removeChildren(box: Gtk.Box) {
 		box.remove(child);
 	}
 }
+
+/**
+ * Core button purpose styles.
+ */
+type ActionStyle = "suggested-action" | "destructive-action" | "flat" | "raised";
+
+/**
+ * Modifier styles for shape and display.
+ */
+type ShapeStyle = "circular" | "pill" | "opaque" | "osd";
+
+/**
+ * Special automatic class.
+ */
+type AutoClass = "image-text-button";
+
+/**
+ * Shape combinations (only unique pairs).
+ */
+type ShapeCombo =
+	| "circular pill"
+	| "circular opaque"
+	| "circular osd"
+	| "pill opaque"
+	| "pill osd"
+	| "opaque osd";
+
+/**
+ * Action + 1 shape
+ */
+type ActionPlusShape = `${ActionStyle} ${ShapeStyle}`;
+
+/**
+ * Action + 2 unique shapes (no duplicates)
+ */
+type ActionPlusShapeCombo = `${ActionStyle} ${ShapeCombo}`;
+
+/**
+ * Valid combinations.
+ */
+export type ButtonClass =
+	| ActionStyle
+	| ShapeStyle
+	| AutoClass
+	| ActionPlusShape
+	| ActionPlusShapeCombo
+	| ShapeCombo;
+
+type Split<T extends string, S extends string> = T extends `${infer TBefore}${S}${infer TAfter}`
+	? [TBefore, ...Split<TAfter, S>]
+	: [T];
+
+/**
+ * Utility function that accepts only valid class combinations.
+ */
+export function buttonClass<T extends ButtonClass>(style: T): Split<T, " "> {
+	return style.split(" ") as never;
+}
