@@ -26,8 +26,10 @@
 
 - [ ] AppImage detail page is not launcher details page, but at the bottom have an advanced page button to edit it on
       launcher details page.
-- [ ] check if appimage is inside defined AppImages directory, if not have recommaneded fixes banner at top with a "Fix"
-      button to fix it and move it.
+- [ ] check if appimage is inside defined AppImages directory, if not, have a recommaneded fixes banner at top with a
+      "Fix" button to fix it and move it.
+- [ ] check appimages inside AppImages directory, and if it doesnt have a launcher, show it in a different section on
+      the home at top with different color, when clicked go to the install page and "install" it.
 - [ ] check if appimage `.desktop` has an action for uninstall, remove. if not show a recommended fixes banner at top
       with a "Fix" button to fix it and add it.
 - [ ] check if appimage has a portable direcotry, if it doesnt show a button that creatres it, if it exists, show a
