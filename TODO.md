@@ -40,6 +40,7 @@
       page. this page should extract app image and get .desktop file info and icons and stuff from there. for app
       images.
 - [ ] have an env variables entiries input to edit envs at the beginning of the exec or something
+- [ ] before doing anything with a portable home, check if app is running, if its tell user to stop it.
 
 ## Startup
 
