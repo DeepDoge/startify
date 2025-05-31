@@ -1,6 +1,7 @@
 import * as path from "jsr:@std/path@1.0.9";
 import { HOME, PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
+import { ref, Sync } from "./signals.ts";
 
 export type Launcher = {
 	file: Deno.FileInfo;
@@ -21,7 +22,10 @@ export declare namespace Launcher {
 		}
 		| {
 			name: "appimage";
-			portable: boolean;
+			portable: Sync<boolean>;
+			createPortableHome(): void;
+			clearPortableHome(): void;
+			deletePortableHome(): void;
 		}
 		| {
 			name: "distrobox";
@@ -80,10 +84,25 @@ export function getLaunchers(): Launcher[] {
 
 			let typeInfo: Launcher.Type;
 			if (execPath.toLowerCase().endsWith(".appimage")) {
-				const portable = Deno.statSync(`${execPath}.home`).isDirectory;
+				const portableHomePath = `${execPath}.home`;
+				const portable = ref(Deno.statSync(portableHomePath).isDirectory);
 				typeInfo = {
 					name: "appimage",
 					portable,
+					createPortableHome() {
+						Deno.mkdirSync(portableHomePath, { recursive: true });
+						portable.set(true);
+					},
+					clearPortableHome() {
+						for (const entry of Deno.readDirSync(portableHomePath)) {
+							const entryPath = path.join(portableHomePath, entry.name);
+							Deno.removeSync(entryPath, { recursive: true });
+						}
+					},
+					deletePortableHome() {
+						Deno.removeSync(portableHomePath, { recursive: true });
+						portable.set(false);
+					},
 				};
 			} else if (execPath === "distrobox" || execPath === "distrobox-enter") {
 				typeInfo = {

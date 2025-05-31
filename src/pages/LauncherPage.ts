@@ -4,9 +4,15 @@ import { SPACING } from "../common/constants.ts";
 import { formatLauncherTypeName, Launcher } from "../common/launchers.ts";
 import { html } from "../common/markup.ts";
 import { Page } from "../components/Page.ts";
+import { bind, removeChildren } from "../common/utils.ts";
 
 export function LauncherPage(launcher: Launcher) {
 	const self = Page();
+
+	const header = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * 1.5);
+	const header_content = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
+	header_content.set_valign(Gtk.Align.CENTER);
+	header.append(header_content);
 
 	const icon = Gtk.Image.new();
 	if (launcher.data.icon?.startsWith("/")) {
@@ -14,8 +20,8 @@ export function LauncherPage(launcher: Launcher) {
 	} else {
 		icon.set_from_icon_name(launcher.data.icon);
 	}
-	icon.set_icon_size(Gtk.IconSize.LARGE);
 	icon.set_pixel_size(120);
+	header.prepend(icon);
 
 	const title = Gtk.Label.new();
 	title.set_halign(Gtk.Align.START);
@@ -24,6 +30,8 @@ export function LauncherPage(launcher: Launcher) {
 	title.set_markup(html`
 		<span size="x-large"><b>${launcher.data.name}</b></span>
 	`);
+	title.set_margin_bottom(SPACING * .25);
+	header_content.append(title);
 
 	const subtitle = Gtk.Label.new();
 	subtitle.set_halign(Gtk.Align.START);
@@ -33,11 +41,11 @@ export function LauncherPage(launcher: Launcher) {
 	subtitle.set_markup(html`
 		<small>${launcher.data.description ?? formatLauncherTypeName(launcher.data.type.name)}</small>
 	`);
+	header_content.append(subtitle);
 
 	const launchButton = Gtk.Button.new();
 	launchButton.set_label("Launch");
 	launchButton.get_style_context().add_class("suggested-action");
-	launchButton.set_hexpand(false);
 	launchButton.set_halign(Gtk.Align.START);
 	launchButton.connect("clicked", () => {
 		const cmd = new Deno.Command("bash", {
@@ -45,20 +53,47 @@ export function LauncherPage(launcher: Launcher) {
 		});
 		cmd.spawn().unref();
 	});
-
-	const header = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * 1.5);
-	const header_info = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
-	header_info.set_valign(Gtk.Align.CENTER);
-
-	header.append(icon);
-	header.append(header_info);
-	header_info.append(title);
-	title.set_margin_bottom(SPACING * .25);
-	header_info.append(subtitle);
 	launchButton.set_margin_top(SPACING);
-	header_info.append(launchButton);
+	header_content.append(launchButton);
+
+	const content = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
+
+	const type = launcher.data.type;
+	if (type.name === "appimage") {
+		bind(content, () =>
+			type.portable.follow((portable) => {
+				removeChildren(content);
+
+				if (portable) {
+					const clearButton = Gtk.Button.new();
+					clearButton.set_label("Clear Portable Home");
+					clearButton.set_halign(Gtk.Align.START);
+					clearButton.connect("clicked", () => {
+						type.clearPortableHome();
+					});
+					content.append(clearButton);
+
+					const deleteButton = Gtk.Button.new();
+					deleteButton.set_label("Delete Portable Home");
+					deleteButton.set_halign(Gtk.Align.START);
+					deleteButton.connect("clicked", () => {
+						type.deletePortableHome();
+					});
+					content.append(deleteButton);
+				} else {
+					const createButton = Gtk.Button.new();
+					createButton.set_label("Create Portable Home");
+					createButton.set_halign(Gtk.Align.START);
+					createButton.connect("clicked", () => {
+						type.createPortableHome();
+					});
+					content.append(createButton);
+				}
+			}, true));
+	}
 
 	self.content.append(header);
+	self.content.append(content);
 
 	return self;
 }
