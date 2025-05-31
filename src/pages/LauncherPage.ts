@@ -60,80 +60,77 @@ export function LauncherPage(launcher: Launcher) {
 	const content = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
 
 	const type = launcher.data.type;
+	const sizeGroup = Adw.PreferencesGroup.new();
+	sizeGroup.set_title("Size");
+	content.append(sizeGroup);
 	if (type.name === "appimage") {
-		const sizeGroup = Adw.PreferencesGroup.new();
-		sizeGroup.set_title("Size");
-		content.append(sizeGroup);
+		const row = Adw.ActionRow.new();
+		row.set_activatable(false);
+		const rowContent = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING);
+		rowContent.set_margin_top(SPACING);
+		rowContent.set_margin_bottom(SPACING);
+		rowContent.set_margin_start(SPACING);
+		rowContent.set_margin_end(SPACING);
+		row.set_child(rowContent);
+		sizeGroup.add(row);
 
-		{
-			const row = Adw.ActionRow.new();
-			row.set_activatable(false);
-			const rowContent = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING);
-			rowContent.set_margin_top(SPACING);
-			rowContent.set_margin_bottom(SPACING);
-			rowContent.set_margin_start(SPACING);
-			rowContent.set_margin_end(SPACING);
-			row.set_child(rowContent);
-			sizeGroup.add(row);
+		const infoBox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
+		infoBox.set_hexpand(true);
+		rowContent.append(infoBox);
 
-			const infoBox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
-			infoBox.set_hexpand(true);
-			rowContent.append(infoBox);
+		const label = Gtk.Label.new();
+		label.set_halign(Gtk.Align.START);
+		label.set_markup(html`
+			<b>Portable Home</b>
+		`);
+		infoBox.append(label);
 
-			const label = Gtk.Label.new();
-			label.set_halign(Gtk.Align.START);
-			label.set_markup(html`
-				<b>Portable Home</b>
-			`);
-			infoBox.append(label);
+		const sizeText = Gtk.Label.new();
+		sizeText.set_halign(Gtk.Align.START);
+		bind(sizeText, () =>
+			type.portable.size.follow((size) => {
+				sizeText.set_markup(html`
+					<small>${formatBytes(size)}</small>
+				`);
+			}, true));
+		sizeText.set_opacity(.65);
+		infoBox.append(sizeText);
 
-			const sizeText = Gtk.Label.new();
-			sizeText.set_halign(Gtk.Align.START);
-			bind(sizeText, () =>
-				type.portable.size.follow((size) => {
-					sizeText.set_markup(html`
-						<small>${formatBytes(size)}</small>
-					`);
-				}, true));
-			sizeText.set_opacity(.65);
-			infoBox.append(sizeText);
+		const actionBox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * .25);
+		rowContent.append(actionBox);
+		bind(actionBox, (box) =>
+			type.portable.exist.follow((portable) => {
+				removeChildren(box);
 
-			const actionBox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, SPACING * .5);
-			rowContent.append(actionBox);
-			bind(actionBox, (box) =>
-				type.portable.exist.follow((portable) => {
-					removeChildren(box);
+				if (portable) {
+					const clearButton = Gtk.Button.new();
+					clearButton.set_css_classes(buttonClass("destructive-action flat"));
+					clearButton.set_label("Clear");
+					clearButton.set_halign(Gtk.Align.START);
+					clearButton.connect("clicked", () => {
+						type.portable.clear();
+					});
+					box.append(clearButton);
 
-					if (portable) {
-						const clearButton = Gtk.Button.new();
-						clearButton.set_css_classes(buttonClass("destructive-action"));
-						clearButton.set_label("Clear");
-						clearButton.set_halign(Gtk.Align.START);
-						clearButton.connect("clicked", () => {
-							type.portable.clear();
-						});
-						box.append(clearButton);
-
-						const deleteButton = Gtk.Button.new();
-						deleteButton.set_label("Delete");
-						deleteButton.set_css_classes(buttonClass("destructive-action"));
-						deleteButton.set_halign(Gtk.Align.START);
-						deleteButton.connect("clicked", () => {
-							type.portable.delete();
-						});
-						box.append(deleteButton);
-					} else {
-						const createButton = Gtk.Button.new();
-						createButton.set_css_classes(buttonClass("pill"));
-						createButton.set_label("Create Portable Home");
-						createButton.set_halign(Gtk.Align.START);
-						createButton.connect("clicked", () => {
-							type.portable.create();
-						});
-						box.append(createButton);
-					}
-				}, true));
-		}
+					const deleteButton = Gtk.Button.new();
+					deleteButton.set_label("Delete");
+					deleteButton.set_css_classes(buttonClass("destructive-action"));
+					deleteButton.set_halign(Gtk.Align.START);
+					deleteButton.connect("clicked", () => {
+						type.portable.delete();
+					});
+					box.append(deleteButton);
+				} else {
+					const createButton = Gtk.Button.new();
+					createButton.set_css_classes(buttonClass("suggested-action"));
+					createButton.set_label("Create");
+					createButton.set_halign(Gtk.Align.START);
+					createButton.connect("clicked", () => {
+						type.portable.create();
+					});
+					box.append(createButton);
+				}
+			}, true));
 	}
 
 	self.content.append(header);
