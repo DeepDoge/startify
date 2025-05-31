@@ -1,8 +1,8 @@
 import GLib from "@girs/GLib";
 
-type Next = (next: () => void) => void;
-type Timeout = (ms: number) => Next;
-const timeout: Timeout = (ms) => {
+export type Next = (next: () => void) => void;
+export type Timeout = (ms: number) => Next;
+export const timeout: Timeout = (ms) => {
 	return (next) =>
 		GLib.timeout_add(GLib.PRIORITY_DEFAULT, ms, () => {
 			next();
