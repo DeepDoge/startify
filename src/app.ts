@@ -82,14 +82,22 @@ app.connect("activate", () => {
 	searchBox.set_margin_bottom(SPACING);
 	searchRevealer.set_child(searchBox);
 
+	searchEntry.grab_focus();
 	searchEntry.connect("search-started", () => {
 		searchRevealer.set_reveal_child(true);
-	});
-	searchBox.connect("show", () => {
 		searchEntry.grab_focus();
+	});
+	searchEntry.connect("search-changed", () => {
+		searchRevealer.set_reveal_child(true);
+		searchEntry.grab_focus();
+	});
+	searchEntry.connect("stop-search", () => {
+		searchRevealer.set_reveal_child(false);
+		searchEntry.set_text("");
 	});
 	searchButton.connect("clicked", () => {
 		searchRevealer.set_reveal_child(!searchRevealer.get_reveal_child());
+		searchEntry.grab_focus();
 	});
 
 	const viewStack = Adw.ViewStack.new();
