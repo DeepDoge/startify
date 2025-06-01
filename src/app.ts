@@ -1,10 +1,13 @@
 import Adw from "@girs/Adw";
 import Gio from "@girs/Gio";
 import Gtk from "@girs/Gtk";
-import { SPACING } from "./common/constants.ts";
+import { HOME, SPACING } from "./common/constants.ts";
 import { Page } from "./components/Page.ts";
-import { HomePage } from "./pages/HomePage.ts";
+import { LaunchersPage } from "./pages/HomePage.ts";
 import { SettingsWindow } from "./windows/SettingsWindow.ts";
+import { getLaunchers } from "./common/launchers.ts";
+import * as path from "@std/path";
+import { ContainerBox } from "./components/ContainerBox.ts";
 
 Adw.init();
 
@@ -50,23 +53,6 @@ app.connect("activate", () => {
 	searchButton.set_valign(Gtk.Align.CENTER);
 	headerBar.pack_start(searchButton);
 
-	const searchRevealer = Gtk.Revealer.new();
-	searchRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-	searchRevealer.set_reveal_child(false);
-
-	const searchEntry = Gtk.SearchEntry.new();
-	searchEntry.set_hexpand(true);
-	searchEntry.set_placeholder_text("Search entries...");
-
-	searchButton.connect("clicked", () => {
-		searchRevealer.set_reveal_child(!searchRevealer.get_reveal_child());
-	});
-
-	const searchBox = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0);
-	searchBox.append(searchEntry);
-	searchBox.set_margin_bottom(SPACING);
-	searchRevealer.set_child(searchBox);
-
 	const menuButton = Gtk.MenuButton.new();
 	headerBar.pack_end(menuButton);
 	menuButton.set_icon_name("open-menu-symbolic");
@@ -79,9 +65,75 @@ app.connect("activate", () => {
 		menu.append("Settings", `app.${settingsAction.get_name()}`);
 	}
 
-	const page = HomePage({ navigation });
-	toolbarView.set_content(page.host);
-	page.content.prepend(searchRevealer);
+	const contentBox = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
+	toolbarView.set_content(contentBox);
+
+	const searchRevealer = Gtk.Revealer.new();
+	searchRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+	searchRevealer.set_reveal_child(false);
+	contentBox.append(searchRevealer);
+
+	const searchEntry = Gtk.SearchEntry.new();
+	searchEntry.set_hexpand(true);
+	searchEntry.set_placeholder_text("Search entries...");
+
+	const searchBox = ContainerBox(Gtk.Orientation.HORIZONTAL, 0);
+	searchBox.append(searchEntry);
+	searchBox.set_margin_bottom(SPACING);
+	searchRevealer.set_child(searchBox);
+
+	searchEntry.connect("search-started", () => {
+		searchRevealer.set_reveal_child(true);
+	});
+	searchBox.connect("show", () => {
+		searchEntry.grab_focus();
+	});
+	searchButton.connect("clicked", () => {
+		searchRevealer.set_reveal_child(!searchRevealer.get_reveal_child());
+	});
+
+	const viewStack = Adw.ViewStack.new();
+	viewStack.set_vexpand(true);
+	contentBox.append(viewStack);
+
+	const switcherTitle = Adw.ViewSwitcherTitle.new();
+	switcherTitle.set_stack(viewStack);
+	headerBar.set_title_widget(switcherTitle);
+
+	const switcherBar = Adw.ViewSwitcherBar.new();
+	switcherBar.set_stack(viewStack);
+	switcherBar.set_reveal(true);
+	toolbarView.add_bottom_bar(switcherBar);
+
+	if (breakpoint === win.get_current_breakpoint()) {
+		switcherTitle.hide();
+		switcherBar.show();
+	} else {
+		switcherTitle.show();
+		switcherBar.hide();
+	}
+	breakpoint.connect("apply", () => {
+		switcherTitle.hide();
+		switcherBar.show();
+	});
+	breakpoint.connect("unapply", () => {
+		switcherTitle.show();
+		switcherBar.hide();
+	});
+
+	viewStack.add_titled_with_icon(
+		LaunchersPage({ navigation }, getLaunchers(path.join(HOME, ".local", "share", "applications"))).host,
+		"user-apps",
+		"User",
+		"avatar-default",
+	);
+
+	viewStack.add_titled_with_icon(
+		LaunchersPage({ navigation }, getLaunchers(path.join("/usr", "share", "applications"))).host,
+		"system-apps",
+		"System",
+		"applications-system",
+	);
 
 	win.present();
 });

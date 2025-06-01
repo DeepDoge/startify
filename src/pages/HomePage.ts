@@ -1,44 +1,47 @@
 import Adw from "@girs/Adw";
 import Gtk from "@girs/Gtk";
 import { AppContext } from "../app.ts";
-import { getLaunchers, Launcher } from "../common/launchers.ts";
+import { Launcher } from "../common/launchers.ts";
 import { LauncherItemBox } from "../components/LauncherItemBox.ts";
 import { MoreBox } from "../components/MoreBox.ts";
 import { Page } from "../components/Page.ts";
 import { LauncherPage } from "./LauncherPage.ts";
 
-export function HomePage(ctx: AppContext) {
+export function LaunchersPage(ctx: AppContext, launchers: Launcher[]) {
 	const self = Page();
 
-	const launchers = getLaunchers();
 	const appImageLaunchers = launchers.filter((launcher) => launcher.info.type === "appimage");
 	const distroboxLaunchers = launchers.filter((launcher) => launcher.info.type === "distrobox");
 	const otherLaunchers = launchers.filter((launchers) => launchers.info.type === "unknown");
 
-	self.content.append(LaunchersGroup(ctx, {
-		title: "AppImage Launchers",
-		description: "Launchers for AppImages you have.",
-		launchers: appImageLaunchers,
-		take: Infinity,
-	}));
+	if (appImageLaunchers.length) {
+		self.container.append(LaunchersGroup(ctx, {
+			title: "AppImage Launchers",
+			description: "Launchers for AppImages you have.",
+			launchers: appImageLaunchers,
+			take: Infinity,
+		}));
+		self.container.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+	}
 
-	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+	if (distroboxLaunchers.length) {
+		self.container.append(LaunchersGroup(ctx, {
+			title: "Distrobox Launchers",
+			description: "Distrobox launchers you have.",
+			launchers: distroboxLaunchers,
+			take: Infinity,
+		}));
+		self.container.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
+	}
 
-	self.content.append(LaunchersGroup(ctx, {
-		title: "Distrobox Launchers",
-		description: "Distrobox launchers you have.",
-		launchers: distroboxLaunchers,
-		take: Infinity,
-	}));
-
-	self.content.append(Gtk.Box.new(Gtk.Orientation.VERTICAL, 0));
-
-	self.content.append(LaunchersGroup(ctx, {
-		title: "Others",
-		description: "Other launchers you have.",
-		launchers: otherLaunchers,
-		take: Infinity,
-	}));
+	if (otherLaunchers.length) {
+		self.container.append(LaunchersGroup(ctx, {
+			title: "Others",
+			description: "Other launchers you have.",
+			launchers: otherLaunchers,
+			take: Infinity,
+		}));
+	}
 
 	return self;
 }
@@ -75,7 +78,7 @@ function LaunchersGroup(
 		moreRow.set_activatable(true);
 		moreRow.connect("activated", () => {
 			const morePage = Page();
-			morePage.content.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
+			morePage.container.append(LaunchersGroup(ctx, { ...options, take: Infinity }));
 			navigation.push({ title: title, page: morePage });
 		});
 		moreRow.set_child(MoreBox());

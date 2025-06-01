@@ -79,8 +79,8 @@ export function LauncherPage(launcher: Launcher) {
 		sizeGroup.add(totalRow);
 	}
 
-	self.content.append(header);
-	self.content.append(content);
+	self.container.append(header);
+	self.container.append(content);
 
 	return self;
 }

@@ -1,10 +1,11 @@
 import Adw from "@girs/Adw";
 import Gtk from "@girs/Gtk";
+import { ContainerBox } from "./ContainerBox.ts";
 import { SPACING } from "../common/constants.ts";
 
 export type Page = {
 	host: Gtk.ScrolledWindow;
-	content: Gtk.Box;
+	container: Gtk.Box;
 };
 
 export function Page(): Page {
@@ -15,17 +16,11 @@ export function Page(): Page {
 	host.set_child(viewport);
 	const clamp = Adw.Clamp.new();
 	viewport.set_child(clamp);
-	const content = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0);
-	clamp.set_child(content);
-	const container = Gtk.Box.new(Gtk.Orientation.VERTICAL, SPACING);
-	content.append(container);
-	container.set_margin_start(SPACING);
-	container.set_margin_end(SPACING);
-	container.set_margin_top(SPACING);
-	container.set_margin_bottom(SPACING);
+	const container = ContainerBox(Gtk.Orientation.VERTICAL, SPACING);
+	clamp.set_child(container);
 
 	return {
 		host,
-		content: container,
+		container,
 	};
 }

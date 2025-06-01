@@ -1,5 +1,5 @@
 import * as path from "@std/path";
-import { HOME, PATH } from "./constants.ts";
+import { PATH } from "./constants.ts";
 import { DesktopFile, parseDesktopFile } from "./desktop.ts";
 import { computed, Sync, sync } from "./signals.ts";
 import { coroutine, timeout } from "./utils/coroutine.ts";
@@ -51,8 +51,7 @@ export function formatLauncherTypeName(type: Launcher.Info["type"]) {
 	return launcherTypeNameMap[type];
 }
 
-export function getLaunchers(): Launcher[] {
-	const dirPath = path.join(HOME, ".local", "share", "applications");
+export function getLaunchers(dirPath: string): Launcher[] {
 	if (!Deno.statSync(dirPath).isDirectory) return [];
 	const dirEntries = Array.from(Deno.readDirSync(dirPath));
 
@@ -176,8 +175,5 @@ export function getLaunchers(): Launcher[] {
 		}
 	});
 
-	return appEntries.filter((entry) => entry !== null).sort((a, b) =>
-		(b.desktop.file.mtime?.getTime() ?? b.desktop.file.ctime?.getTime() ?? -1) -
-		(a.desktop.file.mtime?.getTime() ?? a.desktop.file.ctime?.getTime() ?? -1)
-	).sort((a, b) => a.desktop.name.localeCompare(b.desktop.name));
+	return appEntries.filter((entry) => entry !== null).sort((a, b) => a.desktop.name.localeCompare(b.desktop.name));
 }
